@@ -1,0 +1,51 @@
+<aside class="menu">
+  <h4 class="title is-4">Stores</h4>
+
+  <p class="menu-label">Singletons</p>
+  <ul class="menu-list">
+    @for (store of stores; track store.name) {
+      @if (store.type === ContentType.SINGLETON) {
+        <li>
+          <a [routerLink]="['stores', store.name]">
+            <span class="icon">
+              <i class="fa-regular fa-file"></i>
+            </span>
+            <span>{{ store.label || store.name }}</span>
+          </a>
+        </li>
+      }
+    }
+  </ul>
+
+  <p class="menu-label">Collections</p>
+  <ul class="menu-list">
+    @for (store of stores; track store.name) {
+      @if (store.type === ContentType.COLLECTION) {
+        <li>
+          <a [routerLink]="['stores', store.name]">
+            <span class="icon">
+              <i class="fa-solid fa-list"></i>
+            </span>
+            <span>{{ store.label || store.name }}</span>
+          </a>
+        </li>
+      }
+    }
+  </ul>
+
+  <p class="menu-label">Trees</p>
+  <ul class="menu-list">
+    @for (store of stores; track store.name) {
+      @if (store.type === ContentType.TREE) {
+        <li>
+          <a [routerLink]="['stores', store.name]">
+            <span class="icon">
+              <i class="fa-solid fa-folder-tree"></i>
+            </span>
+            <span>{{ store.label || store.name }}</span>
+          </a>
+        </li>
+      }
+    }
+  </ul>
+</aside>

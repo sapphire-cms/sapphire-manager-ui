@@ -1,0 +1,58 @@
+<h3 class="title is-3">Edit document</h3>
+
+<nav class="breadcrumb">
+  <ul>
+    <li>
+      <span class="icon">
+        @switch (contentSchema.type) {
+          @case (ContentType.SINGLETON) {
+            <i class="fa-regular fa-file"></i>
+          }
+          @case (ContentType.COLLECTION) {
+            <i class="fa-solid fa-list"></i>
+          }
+          @case (ContentType.TREE) {
+            <i class="fa-solid fa-folder-tree"></i>
+          }
+        }
+      </span>
+      <a>
+        <span>{{ contentSchema.label || contentSchema.name }}</span>
+      </a>
+    </li>
+
+    @for (token of document.path; track $index) {
+      <li>
+        <a href="#">{{ token }}</a>
+      </li>
+    }
+
+    <li>
+      <span>
+        <a href="#">{{ document.id }}</a>
+      </span>
+    </li>
+  </ul>
+</nav>
+
+<form>
+  @for (fieldConfig of contentSchema.fields; track $index) {
+    <div class="field mb-5">
+      <label class="label">
+        @if (fieldConfig.required) {
+          <span class="is-size-6 has-text-danger">* </span>
+        }
+
+        <span>{{ fieldConfig.label || fieldConfig.name }}</span>
+      </label>
+
+      @if (fieldConfig.description) {
+        <p class="help">{{ fieldConfig.description }}</p>
+      }
+
+      <div class="control">
+        <input class="input" type="text" [placeholder]="fieldConfig.example || ''">
+      </div>
+    </div>
+  }
+</form>

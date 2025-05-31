@@ -1,14 +1,22 @@
 {
-  "name": "sapphire-manager-ui",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+  "name": "@sapphire-cms/manager-ui",
+  "private": false,
+  "version": "0.1.7",
+  "description": "Content management and administration interface for Sapphire CMS.",
+  "main": "dist/sapphire-manager-ui/browser/index.html",
+  "exports": {
+    "default": "./dist/sapphire-manager-ui/browser/index.html"
   },
-  "private": true,
+  "author": "Alexei KLENIN",
+  "license": "Apache-2.0",
+  "homepage": "https://sapphire-cms.io/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sapphire-cms/sapphire-manager-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sapphire-cms/sapphire-manager-ui/issues"
+  },
   "dependencies": {
     "@angular/common": "^20.0.0",
     "@angular/compiler": "^20.0.0",
@@ -16,6 +24,9 @@
     "@angular/forms": "^20.0.0",
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@sapphire-cms/core": "^0.1.7",
+    "bulma": "^1.0.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
@@ -25,12 +36,24 @@
     "@angular/cli": "^20.0.0",
     "@angular/compiler-cli": "^20.0.0",
     "@types/jasmine": "~5.1.0",
+    "angular-eslint": "19.6.0",
+    "eslint": "^9.27.0",
     "jasmine-core": "~5.7.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.2",
+    "typescript-eslint": "8.32.1"
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "link": "npm link && npm link @sapphire-cms/core",
+    "lint": "ng lint"
   }
 }

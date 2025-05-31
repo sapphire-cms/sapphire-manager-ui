@@ -6,19 +6,18 @@
     "sapphire-manager-ui": {
       "projectType": "application",
       "schematics": {
-        "@schematics/angular:component": {
-          "standalone": false
-        },
-        "@schematics/angular:directive": {
-          "standalone": false
-        },
-        "@schematics/angular:pipe": {
-          "standalone": false
-        }
+        "@schematics/angular:component": { "type": "component" },
+        "@schematics/angular:directive": { "type": "directive" },
+        "@schematics/angular:service": { "type": "service" },
+        "@schematics/angular:guard": { "typeSeparator": "." },
+        "@schematics/angular:interceptor": { "typeSeparator": "." },
+        "@schematics/angular:module": { "typeSeparator": "." },
+        "@schematics/angular:pipe": { "typeSeparator": "." },
+        "@schematics/angular:resolver": { "typeSeparator": "." }
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "scms",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -43,8 +42,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -95,8 +94,23 @@
               "src/styles.css"
             ]
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
+          }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "61607cb4-63f4-4db9-9665-b7fc07dd390e",
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }

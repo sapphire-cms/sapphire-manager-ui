@@ -1,0 +1,114 @@
+<h3 class="title is-3">Documents list</h3>
+
+<nav class="breadcrumb">
+  <ul>
+    <li>
+      <span class="icon">
+        @switch (contentSchema.type) {
+          @case (ContentType.SINGLETON) {
+            <i class="fa-regular fa-file"></i>
+          }
+          @case (ContentType.COLLECTION) {
+            <i class="fa-solid fa-list"></i>
+          }
+          @case (ContentType.TREE) {
+            <i class="fa-solid fa-folder-tree"></i>
+          }
+        }
+      </span>
+      <a>
+        <span>{{ contentSchema.label || contentSchema.name }}</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<nav class="navbar">
+  <div class="navbar-menu">
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="field is-grouped">
+          <div class="control">
+            <a class="button is-primary">
+              <span>Add Document</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+@if (docs.length) {
+  <table class="table is-fullwidth">
+    <thead>
+      <tr>
+        <th>Document</th>
+        <th class="has-text-right">Variants</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (doc of docs; track $index) {
+        <tr>
+          <td>
+            <a [routerLink]="docLink(doc)">
+              @if (contentSchema.type === ContentType.SINGLETON) {
+                <strong>{{doc.store}}</strong>
+              }
+
+              <span class="has-text-grey">{{ doc.path.join('/') }}</span>
+
+              @if (doc.path.length) {
+                <span class="has-text-grey">/</span>
+              }
+
+              <strong>{{doc.docId}}</strong>
+            </a>
+          </td>
+
+          <td class="has-text-right">
+            <p class="tags is-inline-flex">
+              @for (variant of contentSchema!.variants.values; track $index) {
+                <a>
+                  <span class="tag" [class.is-info]="doc.variants.includes(variant)">{{variant}}</span>
+                </a>
+              }
+            </p>
+          </td>
+
+          <td class="has-text-right">
+            <div class="field has-addons is-inline-flex">
+              <p class="control">
+                <button type="button"
+                        class="button is-small"
+                        title="Edit document">
+                  <span class="icon">
+                    <i class="fa-solid fa-file-pen"></i>
+                  </span>
+                </button>
+              </p>
+
+              <p class="control">
+                <button type="button"
+                        class="button is-small is-danger"
+                        title="Delete document.">
+                  <span class="icon">
+                    <i class="fa-solid fa-trash"></i>
+                  </span>
+                </button>
+              </p>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <article class="message is-info">
+    <div class="message-body">
+      Currently store <strong>{{ contentSchema.label || contentSchema.name }}</strong> is empty.
+    </div>
+  </article>
+}
