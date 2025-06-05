@@ -1,0 +1,6 @@
+<input class="input"
+       type="text"
+       [class.is-danger]="invalid"
+       [value]="value || ''"
+       [placeholder]="example || ''"
+       (input)="onInput($event)">

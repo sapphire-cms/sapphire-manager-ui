@@ -11,20 +11,21 @@ import {StoreDocumentsResolver} from './store-documents.resolver';
 import {DocumentEditComponent} from './document-edit/document-edit.component';
 import {DocumentResolver} from './document.resolver';
 import {routes} from './management-routes';
+import {FormsModule} from '../forms/forms.module';
+import {DefaultInputsModule} from '../default-inputs/default-inputs.module';
 
 @NgModule({
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    FormsModule,
+    DefaultInputsModule,  // TODO: thinl where to place it
+  ],
   declarations: [
     StoreList,
     ManagementComponent,
     StoreDetailsComponent,
     DocumentEditComponent,
-  ],
-  exports: [
-    StoreList
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

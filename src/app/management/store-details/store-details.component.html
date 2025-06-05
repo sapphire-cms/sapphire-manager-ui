@@ -70,7 +70,7 @@
 
           <td class="has-text-right">
             <p class="tags is-inline-flex">
-              @for (variant of contentSchema!.variants.values; track $index) {
+              @for (variant of contentSchema!.variants.values; track variant) {
                 <a>
                   <span class="tag" [class.is-info]="doc.variants.includes(variant)">{{variant}}</span>
                 </a>

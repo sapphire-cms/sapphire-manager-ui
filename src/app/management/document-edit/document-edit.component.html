@@ -21,7 +21,7 @@
       </a>
     </li>
 
-    @for (token of document.path; track $index) {
+    @for (token of originalDocument.path; track token) {
       <li>
         <a href="#">{{ token }}</a>
       </li>
@@ -29,30 +29,35 @@
 
     <li>
       <span>
-        <a href="#">{{ document.id }}</a>
+        <a href="#">{{ originalDocument.id }}</a>
       </span>
     </li>
   </ul>
 </nav>
 
-<form>
-  @for (fieldConfig of contentSchema.fields; track $index) {
-    <div class="field mb-5">
-      <label class="label">
-        @if (fieldConfig.required) {
-          <span class="is-size-6 has-text-danger">* </span>
-        }
-
-        <span>{{ fieldConfig.label || fieldConfig.name }}</span>
-      </label>
-
-      @if (fieldConfig.description) {
-        <p class="help">{{ fieldConfig.description }}</p>
-      }
-
-      <div class="control">
-        <input class="input" type="text" [placeholder]="fieldConfig.example || ''">
+<nav class="navbar">
+  <div class="navbar-menu">
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-primary"
+                    [disabled]="!documentChanged"
+                    (click)="saveChanges()">
+              <span class="icon">
+                <i class="fa-solid fa-floppy-disk"></i>
+              </span>
+              <span>Save Changes</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  }
-</form>
+  </div>
+</nav>
+
+<scms-document-form [contentSchema]="contentSchema"
+                    [document]="changedDocument"
+                    [validationResult]="validationResult"
+                    (documentChange)="onDocumentChange($event)">
+</scms-document-form>

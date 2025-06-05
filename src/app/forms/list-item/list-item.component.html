@@ -1,0 +1,42 @@
+<div class="box">
+  <div class="buttons has-addons is-right">
+    <button type="button"
+            class="button is-small"
+            title="Move entry up"
+            [disabled]="index === 0"
+            (click)="onMoveUp()">
+      <span class="icon">
+        <i class="fa-solid fa-chevron-up"></i>
+      </span>
+    </button>
+
+    <button type="button"
+            class="button is-small"
+            title="Move entry down"
+            [disabled]="last"
+            (click)="onMoveDown()">
+      <span class="icon">
+        <i class="fa-solid fa-chevron-down"></i>
+      </span>
+    </button>
+
+    <button type="button"
+            class="button is-small is-danger"
+            title="Delete entry"
+            (click)="onDelete()">
+      <span class="icon">
+        <i class="fa-solid fa-trash"></i>
+      </span>
+    </button>
+  </div>
+
+  <div class="control">
+    <ng-template #input></ng-template>
+  </div>
+
+  @if (this.validationResult?.errors?.length) {
+    @for (error of validationResult?.errors; track error) {
+      <p class="help is-danger">{{error}}</p>
+    }
+  }
+</div>

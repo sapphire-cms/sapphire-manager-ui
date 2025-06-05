@@ -1,0 +1,23 @@
+<div class="field mb-5">
+  <label class="label">
+    @if (fieldSchema.required) {
+      <span class="is-size-6 has-text-danger">* </span>
+    }
+
+    <span>{{ fieldSchema.label || fieldSchema.name }}</span>
+  </label>
+
+  @if (fieldSchema.description) {
+    <p class="help">{{ fieldSchema.description }}</p>
+  }
+
+  <div class="control">
+    <ng-template #input></ng-template>
+  </div>
+
+  @if (this.validationResult?.errors?.length) {
+    @for (error of validationResult?.errors; track error) {
+      <p class="help is-danger">{{error}}</p>
+    }
+  }
+</div>

@@ -1,0 +1,41 @@
+<div class="field mb-5">
+  <label class="label">
+    @if (fieldSchema.required) {
+      <span class="is-size-6 has-text-danger">* </span>
+    }
+
+    <span>{{ fieldSchema.label || fieldSchema.name }}</span>
+  </label>
+
+  @if (fieldSchema.description) {
+    <p class="help">{{ fieldSchema.description }}</p>
+  }
+
+  @if (fieldValue) {
+    @for (value of fieldValue; track value) {
+      <div class="mt-3">
+        <scms-list-item [fieldSchema]="fieldSchema"
+                        [itemValue]="value"
+                        [index]="$index"
+                        [last]="$last"
+                        [validationResult]="validationResults?.[$index]"
+                        (itemValueChange)="onValueChange($index, $event)"
+                        (moveUp)="moveUp($event)"
+                        (moveDown)="moveDown($event)"
+                        (delete)="delete($event)">
+        </scms-list-item>
+      </div>
+    }
+  }
+
+  <div class="has-text-centered mt-3">
+    <button type="button"
+            class="button is-rounded is-primary"
+            title="Add item"
+            (click)="addItem()">
+      <span class="icon">
+        <i class="fa-solid fa-plus"></i>
+      </span>
+    </button>
+  </div>
+</div>

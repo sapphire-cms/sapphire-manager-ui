@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {ContentSchema, DocumentInfo, DocumentReference, Document} from '@sapphire-cms/core';
+import {map, Observable} from 'rxjs';
+import {
+  ContentSchema,
+  DocumentInfo,
+  DocumentReference,
+  Document,
+  DocumentContent,
+  ContentValidationResult
+} from '@sapphire-cms/core';
 
 @Injectable()
 export class ManagementService {
@@ -19,13 +26,25 @@ export class ManagementService {
   }
 
   public listDocuments(store: string): Observable<DocumentInfo[]> {
-    return this.http.get<DocumentInfo[]>(ManagementService.server + `/rest/management/actions/list/${store}`);
+    return this.http.get<DocumentInfo[]>(ManagementService.server + `/rest/management/stores/${store}/list`);
   }
 
   public fetchDocument(docRef: DocumentReference): Observable<Document> {
-    const path = [ docRef.store, ...docRef.path, docRef.docId ].filter(token => token).join('/');
-    return this.http.get<Document>(ManagementService.server + `/rest/management/docs/${path}`, {
+    const docPath = [ ...docRef.path, docRef.docId ].filter(token => token).join('/');
+    return this.http.get<Document>(ManagementService.server + `/rest/management/stores/${docRef.store}/docs/${docPath}`);
+  }
 
-    });
+  public putDocument(docRef: DocumentReference, content: DocumentContent): Observable<Document> {
+    const docPath = [ ...docRef.path, docRef.docId ].filter(token => token).join('/');
+    return this.http.put<Document>(ManagementService.server + `/rest/management/stores/${docRef.store}/docs/${docPath}`, content);
+  }
+
+  public deleteDocument(docRef: DocumentReference): Observable<Document> {
+    const docPath = [ ...docRef.path, docRef.docId ].filter(token => token).join('/');
+    return this.http.delete<Document>(ManagementService.server + `/rest/management/stores/${docRef.store}/docs/${docPath}`);
+  }
+
+  public validateDocumentContent(store: string, content: DocumentContent): Observable<ContentValidationResult> {
+    return this.http.post<ContentValidationResult>(ManagementService.server + `/rest/management/stores/${store}/actions/validate`, content);
   }
 }

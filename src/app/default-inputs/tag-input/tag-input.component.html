@@ -1,0 +1,22 @@
+<p class="help">Click on tags to select or unselect them.</p>
+
+@if (params.multiples) {
+  <p class="help is-italic">Multiple tags are authorized.</p>
+} @else {
+  <p class="help is-italic">Multiple tags are forbidden.</p>
+}
+
+<div class="field is-grouped is-grouped-multiline mt-3">
+  @for (tag of params.values; track tag) {
+    <div class="control">
+      <a class="tags has-addons"
+         (click)="toggle(tag)">
+        <span class="tag is-dark">#</span>
+        <span class="tag"
+              [class.is-info]="selected.has(tag)">
+          {{tag}}
+        </span>
+      </a>
+    </div>
+  }
+</div>
