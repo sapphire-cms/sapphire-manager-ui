@@ -1,6 +1,12 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ContentSchema, ContentType, ContentValidationResult, Document, ValidationResult} from '@sapphire-cms/core';
+import {
+  ContentSchema,
+  ContentType,
+  ContentValidationResult,
+  Document,
+  DocumentReference, InvalidDocumentError,
+} from '@sapphire-cms/core';
 import {map, Subject, takeUntil} from 'rxjs';
 import {DOCUMENT_KEY} from '../document.resolver';
 import {CONTENT_SCHEMA_KEY} from '../content-schema.resolver';
@@ -21,6 +27,7 @@ export class DocumentEditComponent implements OnDestroy {
   protected originalDocument!: Document;
   protected changedDocument!: Document;
   protected validationResult?: ContentValidationResult;
+  protected unexpectedServerError?: string;
 
   private readonly destroy$ = new Subject();
 
@@ -39,6 +46,11 @@ export class DocumentEditComponent implements OnDestroy {
 
   protected onDocumentChange(newDocument: Document) {
     this.changedDocument = newDocument;
+
+    if (!this.documentChanged) {
+      this.validationResult = undefined;
+    }
+
     this.cdr.markForCheck();
   }
 
@@ -47,13 +59,29 @@ export class DocumentEditComponent implements OnDestroy {
   }
 
   protected saveChanges() {
-    this.managementService.validateDocumentContent(this.contentSchema.name, this.changedDocument.content)
-      .subscribe(validationResult => {
-        console.log(validationResult);
+    const docRef = new DocumentReference(
+      this.changedDocument.store,
+      this.changedDocument.path,
+      this.changedDocument.id,
+      this.changedDocument.variant,
+    );
 
-        this.validationResult = validationResult;
+    this.managementService.putDocument(docRef, this.changedDocument.content).subscribe({
+      next: (document) => {
+        this.originalDocument = deepClone(document);
+        this.changedDocument = deepClone(document);
         this.cdr.markForCheck();
-      });
+      },
+      error: (err) => {
+        if (err.status === 400) {
+          this.validationResult = (err.error as InvalidDocumentError).validationResult;
+        } else {
+          this.unexpectedServerError = err.error;
+        }
+
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   ngOnDestroy() {

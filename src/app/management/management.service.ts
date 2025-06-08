@@ -1,14 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map, Observable} from 'rxjs';
-import {
-  ContentSchema,
-  DocumentInfo,
-  DocumentReference,
-  Document,
-  DocumentContent,
-  ContentValidationResult
-} from '@sapphire-cms/core';
+import {Observable} from 'rxjs';
+import {ContentSchema, Document, DocumentContent, DocumentInfo, DocumentReference} from '@sapphire-cms/core';
 
 @Injectable()
 export class ManagementService {
@@ -42,9 +35,5 @@ export class ManagementService {
   public deleteDocument(docRef: DocumentReference): Observable<Document> {
     const docPath = [ ...docRef.path, docRef.docId ].filter(token => token).join('/');
     return this.http.delete<Document>(ManagementService.server + `/rest/management/stores/${docRef.store}/docs/${docPath}`);
-  }
-
-  public validateDocumentContent(store: string, content: DocumentContent): Observable<ContentValidationResult> {
-    return this.http.post<ContentValidationResult>(ManagementService.server + `/rest/management/stores/${store}/actions/validate`, content);
   }
 }

@@ -56,6 +56,14 @@
   </div>
 </nav>
 
+@if (unexpectedServerError) {
+  <article class="message is-danger">
+    <div class="message-body">
+      {{unexpectedServerError}}
+    </div>
+  </article>
+}
+
 <scms-document-form [contentSchema]="contentSchema"
                     [document]="changedDocument"
                     [validationResult]="validationResult"
