@@ -71,6 +71,11 @@
               "buildTarget": "sapphire-manager-ui:build:development"
             }
           },
+          "options": {
+            "prebundle": {
+              "exclude": ["tsyringe", "zod", "nanoid"]
+            }
+          },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {

@@ -2,9 +2,8 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '
 import {ActivatedRoute} from '@angular/router';
 import {
   ContentSchema,
-  ContentType,
   ContentValidationResult,
-  Document,
+  Document, DocumentContent,
   DocumentReference, InvalidDocumentError,
 } from '@sapphire-cms/core';
 import {map, Subject, takeUntil} from 'rxjs';
@@ -21,8 +20,6 @@ import {ManagementService} from '../management.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentEditComponent implements OnDestroy {
-  protected readonly ContentType = ContentType;
-
   protected contentSchema!: ContentSchema;
   protected originalDocument!: Document;
   protected changedDocument!: Document;
@@ -44,8 +41,8 @@ export class DocumentEditComponent implements OnDestroy {
       });
   }
 
-  protected onDocumentChange(newDocument: Document) {
-    this.changedDocument = newDocument;
+  protected onContentChange(newContent: DocumentContent) {
+    this.changedDocument.content = newContent;
 
     if (!this.documentChanged) {
       this.validationResult = undefined;

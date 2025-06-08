@@ -1,10 +1,14 @@
-<p class="help">Click on tags to select or unselect them.</p>
+<article class="message is-small is-info">
+  <div class="message-body">
+    <p>Click on tags to select or unselect them.</p>
 
-@if (params.multiples) {
-  <p class="help is-italic">Multiple tags are authorized.</p>
-} @else {
-  <p class="help is-italic">Multiple tags are forbidden.</p>
-}
+    @if (params.multiples) {
+      <p class="is-italic">Multiple tags are authorized.</p>
+    } @else {
+      <p class="is-italic">Multiple tags are forbidden.</p>
+    }
+  </div>
+</article>
 
 <div class="field is-grouped is-grouped-multiline mt-3">
   @for (tag of params.values; track tag) {

@@ -1,0 +1,40 @@
+<div class="field has-addons">
+  <p class="control">
+    <a class="button is-static">
+      <span class="icon">
+        <i class="fa-solid fa-link"></i>
+      </span>
+    </a>
+  </p>
+
+  <p class="control is-expanded">
+    <input class="input"
+           type="text"
+           placeholder="Select referenced document"
+           readonly
+           [value]="value || ''">
+  </p>
+
+  <p class="control">
+    <button type="button"
+            class="button is-link"
+            (click)="showDocumentPicker()">
+      <span>Select</span>
+    </button>
+  </p>
+
+  <p class="control">
+    <button type="button"
+            class="button is-danger"
+            (click)="clear()">
+      <span>Clear</span>
+    </button>
+  </p>
+</div>
+
+<scms-document-picker [contentSchema]="contentSchema"
+                      [documents]="documents"
+                      [shown]="pickedShown"
+                      (docRef)="onSelect($event)"
+                      (close)="pickedShown = false">
+</scms-document-picker>

@@ -1,0 +1,22 @@
+<div class="field mb-5">
+  <label class="label">
+    <span>Document Path</span>
+  </label>
+
+  <article class="message is-small is-info">
+    <div class="message-body">
+      <p>Slash separated path to the document in the tree.</p>
+    </div>
+  </article>
+
+  <input
+    type="text"
+    class="input"
+    [value]="value().join('/') || ''"
+    [class.is-danger]="validationResult && !validationResult.isValid"
+    (input)="onInput($event)" />
+
+  @for (error of validationResult?.errors; track error) {
+    <p class="help is-danger">{{error}}</p>
+  }
+</div>

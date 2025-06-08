@@ -34,9 +34,7 @@
     <ng-template #input></ng-template>
   </div>
 
-  @if (this.validationResult?.errors?.length) {
-    @for (error of validationResult?.errors; track error) {
-      <p class="help is-danger">{{error}}</p>
-    }
+  @for (error of validationResult?.errors; track error) {
+    <p class="help is-danger">{{error}}</p>
   }
 </div>

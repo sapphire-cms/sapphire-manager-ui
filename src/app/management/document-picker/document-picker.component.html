@@ -1,0 +1,78 @@
+<div class="modal"
+     [class.is-active]="shown">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Document Picker</p>
+    </header>
+
+    <section class="modal-card-body">
+      <article class="message is-small is-info">
+        <div class="message-body">
+          Click on the desired variant to select the document.
+        </div>
+      </article>
+
+      <table class="table is-fullwidth">
+        <thead>
+        <tr>
+          <th>Document</th>
+          <th class="has-text-right">Variants</th>
+        </tr>
+        </thead>
+
+        <tbody>
+          @for (doc of documents; track $index) {
+            <tr>
+              <td>
+                <strong>{{doc.store}}</strong>
+
+                @if (contentSchema.type != ContentType.SINGLETON) {
+                  <span class="has-text-grey">/</span>
+                }
+
+                <span class="has-text-grey">{{ doc.path.join('/') }}</span>
+
+                @if (doc.path.length) {
+                  <span class="has-text-grey">/</span>
+                }
+
+                <strong>{{doc.docId}}</strong>
+              </td>
+
+              <td class="has-text-right">
+                <div class="field has-addons is-inline-flex">
+                  @for (variant of doc.variants; track variant) {
+                    <p class="control">
+                      <button type="button"
+                              class="button is-small"
+                              (click)="onSelect(doc, variant)">
+                        <span class="icon">
+                          <i class="fa-solid fa-link"></i>
+                        </span>
+                        <span>{{variant}}</span>
+                      </button>
+                    </p>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="modal-card-foot">
+      <button type="button"
+              class="button"
+              (click)="close.emit()">
+        <span>Cancel</span>
+      </button>
+    </footer>
+  </div>
+
+  <button type="button"
+          class="modal-close is-large"
+          (click)="close.emit()">
+  </button>
+</div>

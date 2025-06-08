@@ -3,17 +3,23 @@ import { CommonModule } from '@angular/common';
 import {SimpleFieldComponent} from './simple-field/simple-field.component';
 import {ListFieldComponent} from './list-field/list-field.component';
 import {ListItemComponent} from './list-item/list-item.component';
-import {DocumentFormComponent} from './document-form/document-form.component';
+import {ContentFormComponent} from './content-form/content-form.component';
+import {DocIdInputComponent} from './doc-id-input/doc-id-input.component';
+import {DocPathInputComponent} from './doc-path-input/doc-path-input.component';
 
 @NgModule({
   declarations: [
     SimpleFieldComponent,
     ListFieldComponent,
     ListItemComponent,
-    DocumentFormComponent,
+    ContentFormComponent,
+    DocIdInputComponent,
+    DocPathInputComponent,
   ],
   exports: [
-    DocumentFormComponent,
+    ContentFormComponent,
+    DocIdInputComponent,
+    DocPathInputComponent,
   ],
   imports: [
     CommonModule

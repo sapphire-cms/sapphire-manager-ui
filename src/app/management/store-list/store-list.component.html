@@ -7,9 +7,9 @@
       @if (store.type === ContentType.SINGLETON) {
         <li>
           <a [routerLink]="['stores', store.name]">
-            <span class="icon">
-              <i class="fa-regular fa-file"></i>
-            </span>
+            <scms-content-type-icon [contentType]="ContentType.SINGLETON">
+            </scms-content-type-icon>
+
             <span>{{ store.label || store.name }}</span>
           </a>
         </li>
@@ -23,9 +23,9 @@
       @if (store.type === ContentType.COLLECTION) {
         <li>
           <a [routerLink]="['stores', store.name]">
-            <span class="icon">
-              <i class="fa-solid fa-list"></i>
-            </span>
+            <scms-content-type-icon [contentType]="ContentType.COLLECTION">
+            </scms-content-type-icon>
+
             <span>{{ store.label || store.name }}</span>
           </a>
         </li>
@@ -39,9 +39,9 @@
       @if (store.type === ContentType.TREE) {
         <li>
           <a [routerLink]="['stores', store.name]">
-            <span class="icon">
-              <i class="fa-solid fa-folder-tree"></i>
-            </span>
+            <scms-content-type-icon [contentType]="ContentType.TREE">
+            </scms-content-type-icon>
+
             <span>{{ store.label || store.name }}</span>
           </a>
         </li>

@@ -1,0 +1,29 @@
+<nav class="breadcrumb mb-5">
+  <ul>
+    <li>
+      <scms-content-type-icon [contentType]="contentSchema.type">
+      </scms-content-type-icon>
+      <a>
+        <a [routerLink]="[ '/management', 'stores', contentSchema.name ]">
+          {{ contentSchema.label || contentSchema.name }}
+        </a>
+      </a>
+    </li>
+
+    @for (token of path; track token) {
+      <li>
+        <a class="has-text-grey">{{ token }}</a>
+      </li>
+    }
+
+    @if (docId) {
+      <li>
+        <span>
+          <a [routerLink]="docLink">
+            {{ docId }}
+          </a>
+        </span>
+      </li>
+    }
+  </ul>
+</nav>

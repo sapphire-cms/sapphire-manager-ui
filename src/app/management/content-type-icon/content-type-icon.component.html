@@ -1,0 +1,13 @@
+<span class="icon ml-0 mr-2">
+  @switch (contentType) {
+    @case (ContentType.SINGLETON) {
+      <i class="fa-regular fa-file"></i>
+    }
+    @case (ContentType.COLLECTION) {
+      <i class="fa-solid fa-list"></i>
+    }
+    @case (ContentType.TREE) {
+      <i class="fa-solid fa-folder-tree"></i>
+    }
+  }
+</span>

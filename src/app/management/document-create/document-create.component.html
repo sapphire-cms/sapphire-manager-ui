@@ -1,8 +1,6 @@
-<script src="document-edit.component.ts"></script><h3 class="title is-3">Edit document</h3>
+<h3 class="title is-3">Create document</h3>
 
-<scms-doc-path-navbar [contentSchema]="contentSchema"
-                      [path]="originalDocument.path"
-                      [docId]="originalDocument.id">
+<scms-doc-path-navbar [contentSchema]="contentSchema">
 </scms-doc-path-navbar>
 
 <nav class="navbar">
@@ -19,12 +17,12 @@
 
           <div class="control">
             <button class="button is-primary"
-                    [disabled]="!documentChanged"
-                    (click)="saveChanges()">
+                    [disabled]="!readyToSave"
+                    (click)="saveDocument()">
               <span class="icon">
                 <i class="fa-solid fa-floppy-disk"></i>
               </span>
-              <span>Save Changes</span>
+              <span>Save Document</span>
             </button>
           </div>
         </div>
@@ -41,8 +39,17 @@
   </article>
 }
 
+@if (contentSchema.type != ContentType.SINGLETON) {
+  <scms-doc-id-input (valueChange)="docId = $event">
+  </scms-doc-id-input>
+}
+
+@if (contentSchema.type === ContentType.TREE) {
+  <scms-doc-path-input (valueChange)="path = $event">
+  </scms-doc-path-input>
+}
+
 <scms-content-form [contentSchema]="contentSchema"
-                   [content]="changedDocument.content"
                    [validationResult]="validationResult"
-                   (contentChange)="onContentChange($event)">
+                   (contentChange)="content = $event">
 </scms-content-form>

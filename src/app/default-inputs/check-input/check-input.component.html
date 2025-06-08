@@ -1,3 +1,6 @@
-<input type="checkbox"
-       [checked]="value"
-       (input)="onInput($event)" />
+<label class="switch is-rounded">
+  <input type="checkbox"
+         [checked]="value"
+         (input)="onInput($event)" />
+  <span class="check is-info"></span>
+</label>

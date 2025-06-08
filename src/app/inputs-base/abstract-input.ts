@@ -19,5 +19,5 @@ export abstract class AbstractInput<T> {
   public invalid = false;
 
   @Output()
-  public valueChange = new EventEmitter<T | undefined>();
+  public readonly valueChange = new EventEmitter<T | undefined>();
 }

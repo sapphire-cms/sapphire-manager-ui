@@ -1,0 +1,23 @@
+<div class="field mb-5">
+  <label class="label">
+    <span>Document ID</span>
+  </label>
+
+  <article class="message is-small is-info">
+    <div class="message-body">
+      <p>Optional. If left empty CMS will generate one.</p>
+    </div>
+  </article>
+
+  <input
+    type="text"
+    class="input"
+    [value]="value() || ''"
+    [class.is-danger]="validationResult && !validationResult.isValid"
+    (input)="onInput($event)" />
+
+  @for (error of validationResult?.errors; track error) {
+    <p class="help is-danger">{{error}}</p>
+  }
+</div>
+
