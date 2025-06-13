@@ -1,14 +1,10 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
-import {
-  ContentSchema, ContentType,
-  ContentValidationResult,
-  DocumentContent,
-  DocumentReference, InvalidDocumentError,
-} from '@sapphire-cms/core';
+import {ContentSchema, ContentType,} from '@sapphire-cms/core';
 import {map, Subject, takeUntil} from 'rxjs';
-import {ManagementService} from '../management.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CONTENT_SCHEMA_KEY} from '../content-schema.resolver';
+import {FullDocument} from '../../forms/forms.types';
+import {ManagementService} from '../management.service';
 
 @Component({
   selector: 'scms-document-create',
@@ -27,9 +23,7 @@ export class DocumentCreateComponent implements OnDestroy {
   protected path: string[] = [];
   protected pathValid = true;
 
-  protected content?: DocumentContent;
-  protected validationResult?: ContentValidationResult;
-
+  protected document?: FullDocument;
   protected unexpectedServerError?: string;
 
   private readonly destroy$ = new Subject();
@@ -42,37 +36,40 @@ export class DocumentCreateComponent implements OnDestroy {
       .pipe(map(data => data[CONTENT_SCHEMA_KEY]), takeUntil(this.destroy$))
       .subscribe((contentSchema: ContentSchema) => {
         this.contentSchema = contentSchema;
+        this.document = FullDocument.createEmpty(contentSchema);
         this.cdr.markForCheck();
       });
   }
 
   protected get readyToSave(): boolean {
-    return this.docIdValid && this.pathValid && !!this.content;
+    return this.docIdValid
+      && this.pathValid
+      && !!this.document;
   }
 
   protected saveDocument() {
-    const docRef = new DocumentReference(
-      this.contentSchema.name,
-      this.path,
-      this.docId,
-      // this.changedDocument.variant,  // TODO: provide variant
-    );
-
-    this.managementService.putDocument(docRef, this.content!).subscribe({
-      next: (document) => {
-        const redirectPath = [ '/management', 'stores', document.store, 'docs', ...document.path, document.id ].filter(token => token);
-        this.router.navigate(redirectPath);
-      },
-      error: (err) => {
-        if (err.status === 400) {
-          this.validationResult = (err.error as InvalidDocumentError).validationResult;
+    this.managementService.saveDocument(this.document!, this.contentSchema).match(
+      document => {
+        if (document.valid) {
+          const ref = document.ref;
+          const redirectPath = [ '/management', 'stores', ref.store, 'docs', ...ref.path, ref.docId ].filter(token => token);
+          this.router.navigate(redirectPath);
         } else {
-          this.unexpectedServerError = err.error;
+          this.document = document;
+          this.cdr.markForCheck();
         }
-
+      },
+      err => {
+        console.error(err);
+        this.unexpectedServerError = err.message;
         this.cdr.markForCheck();
       },
-    });
+      defect => {
+        console.error(defect);
+        this.unexpectedServerError = String(defect);
+        this.cdr.markForCheck();
+      },
+    );
   }
 
   ngOnDestroy() {

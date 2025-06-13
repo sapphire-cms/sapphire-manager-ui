@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {ContentSchema} from '@sapphire-cms/core';
-import {ManagementService} from '../management.service';
+import {ManagementClient} from '../management-client.service';
 
 @Component({
   selector: 'scms-management',
@@ -11,7 +11,7 @@ import {ManagementService} from '../management.service';
 export class ManagementComponent implements OnInit {
   public stores: ContentSchema[] = [];
 
-  constructor(public readonly managementService: ManagementService,
+  constructor(public readonly managementService: ManagementClient,
               private readonly cdr: ChangeDetectorRef) {
   }
 

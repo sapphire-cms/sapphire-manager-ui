@@ -1,0 +1,33 @@
+<form>
+  @for (fieldSchema of contentSchema.fields; track fieldSchema.name) {
+    @if (fieldSchema.type.name === 'group') {
+      @if (!fieldSchema.isList) {
+        <scms-group-field [contentSchema]="contentSchema"
+                          [fieldSchema]="fieldSchema"
+                          [groupDoc]="getGroupDoc(fieldSchema.name)"
+                          (groupDocChange)="onFieldValueChange(fieldSchema.name, $event)">
+        </scms-group-field>
+      } @else {
+        <scms-group-list-field [contentSchema]="contentSchema"
+                               [fieldSchema]="fieldSchema"
+                               [groupDocs]="getGroupDocList(fieldSchema.name)"
+                               (groupDocsChange)="onFieldValueChange(fieldSchema.name, $event)">
+        </scms-group-list-field>
+      }
+    } @else {
+      @if (!fieldSchema.isList) {
+        <scms-simple-field [fieldSchema]="fieldSchema"
+                           [fieldValue]="getPrimitiveValue(fieldSchema.name)"
+                           [validationResult]="getValidationResults(fieldSchema.name)[0]"
+                           (fieldValueChange)="onFieldValueChange(fieldSchema.name, $event)">
+        </scms-simple-field>
+      } @else {
+        <scms-simple-list-field [fieldSchema]="fieldSchema"
+                                [fieldValue]="getPrimitiveList(fieldSchema.name)"
+                                [validationResults]="getValidationResults(fieldSchema.name)"
+                                (fieldValueChange)="onFieldValueChange(fieldSchema.name, $event)">
+        </scms-simple-list-field>
+      }
+    }
+  }
+</form>

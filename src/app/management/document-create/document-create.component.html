@@ -49,7 +49,9 @@
   </scms-doc-path-input>
 }
 
-<scms-content-form [contentSchema]="contentSchema"
-                   [validationResult]="validationResult"
-                   (contentChange)="content = $event">
-</scms-content-form>
+@if (document) {
+  <scms-document-form [contentSchema]="contentSchema"
+                      [document]="document"
+                      (documentChange)="document = $event">
+  </scms-document-form>
+}

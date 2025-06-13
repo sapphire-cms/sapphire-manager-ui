@@ -3,7 +3,7 @@ import {forkJoin, map, mergeMap, Observable, Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {CONTENT_SCHEMA_KEY} from '../content-schema.resolver';
 import {ContentSchema, ContentType, Document, DocumentInfo, DocumentReference} from '@sapphire-cms/core';
-import {ManagementService} from '../management.service';
+import {ManagementClient} from '../management-client.service';
 
 @Component({
   selector: 'scms-store-details',
@@ -19,7 +19,7 @@ export class StoreDetailsComponent implements OnDestroy {
 
   private readonly destroy$ = new Subject();
 
-  constructor(private readonly managementService: ManagementService,
+  constructor(private readonly managementService: ManagementClient,
               private readonly activatedRoute: ActivatedRoute,
               private readonly cdr: ChangeDetectorRef) {
     this.activatedRoute.data

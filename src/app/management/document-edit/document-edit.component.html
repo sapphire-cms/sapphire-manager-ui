@@ -1,8 +1,8 @@
-<script src="document-edit.component.ts"></script><h3 class="title is-3">Edit document</h3>
+<h3 class="title is-3">Edit document</h3>
 
 <scms-doc-path-navbar [contentSchema]="contentSchema"
-                      [path]="originalDocument.path"
-                      [docId]="originalDocument.id">
+                      [path]="originalDocument.ref.path"
+                      [docId]="originalDocument.ref.docId">
 </scms-doc-path-navbar>
 
 <nav class="navbar">
@@ -41,8 +41,7 @@
   </article>
 }
 
-<scms-content-form [contentSchema]="contentSchema"
-                   [content]="changedDocument.content"
-                   [validationResult]="validationResult"
-                   (contentChange)="onContentChange($event)">
-</scms-content-form>
+<scms-document-form [contentSchema]="contentSchema"
+                    [document]="originalDocument"
+                    (documentChange)="onDocumentChange($event)">
+</scms-document-form>

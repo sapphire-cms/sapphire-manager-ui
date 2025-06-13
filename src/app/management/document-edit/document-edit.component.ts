@@ -1,17 +1,12 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {
-  ContentSchema,
-  ContentValidationResult,
-  Document, DocumentContent,
-  DocumentReference, InvalidDocumentError,
-} from '@sapphire-cms/core';
+import {ContentSchema,} from '@sapphire-cms/core';
 import {map, Subject, takeUntil} from 'rxjs';
-import {DOCUMENT_KEY} from '../document.resolver';
 import {CONTENT_SCHEMA_KEY} from '../content-schema.resolver';
 import deepEqual from 'fast-deep-equal/es6';
-import {deepClone} from '../../../utils/deep-clone';
+import {DOCUMENT_REFERENCE} from '../doc-ref.resolver';
 import {ManagementService} from '../management.service';
+import {FullDocument} from '../../forms/forms.types';
 
 @Component({
   selector: 'scms-document-edit',
@@ -21,9 +16,8 @@ import {ManagementService} from '../management.service';
 })
 export class DocumentEditComponent implements OnDestroy {
   protected contentSchema!: ContentSchema;
-  protected originalDocument!: Document;
-  protected changedDocument!: Document;
-  protected validationResult?: ContentValidationResult;
+  protected originalDocument!: FullDocument;
+  protected changedDocument!: FullDocument;
   protected unexpectedServerError?: string;
 
   private readonly destroy$ = new Subject();
@@ -32,23 +26,30 @@ export class DocumentEditComponent implements OnDestroy {
               private readonly activatedRoute: ActivatedRoute,
               private readonly cdr: ChangeDetectorRef) {
     this.activatedRoute.data
-      .pipe(map(data => data[DOCUMENT_KEY]), takeUntil(this.destroy$))
-      .subscribe(document => {
+      .pipe(map(data => data[DOCUMENT_REFERENCE]), takeUntil(this.destroy$))
+      .subscribe(docRef => {
         this.contentSchema = this.activatedRoute.parent?.parent?.snapshot.data[CONTENT_SCHEMA_KEY];
-        this.originalDocument = deepClone(document);
-        this.changedDocument = deepClone(document);
-        this.cdr.markForCheck();
+
+        this.managementService.loadDocument(docRef, this.contentSchema).match(
+          document => {
+            this.originalDocument = document.clone();
+            this.changedDocument = document.clone();
+            this.cdr.markForCheck();
+          },
+          err => {
+            this.unexpectedServerError = err.message;
+            this.cdr.markForCheck();
+          },
+          defect => {
+            this.unexpectedServerError = String(defect);
+            this.cdr.markForCheck();
+          },
+        );
       });
   }
 
-  protected onContentChange(newContent: DocumentContent) {
-    this.changedDocument.content = newContent;
-
-    if (!this.documentChanged) {
-      this.validationResult = undefined;
-    }
-
-    this.cdr.markForCheck();
+  protected onDocumentChange(updatedDocument: FullDocument) {
+    this.changedDocument = updatedDocument;
   }
 
   protected get documentChanged(): boolean {
@@ -56,29 +57,23 @@ export class DocumentEditComponent implements OnDestroy {
   }
 
   protected saveChanges() {
-    const docRef = new DocumentReference(
-      this.changedDocument.store,
-      this.changedDocument.path,
-      this.changedDocument.id,
-      this.changedDocument.variant,
+    this.managementService.saveDocument(this.changedDocument, this.contentSchema).match(
+      document => {
+        this.originalDocument = document.clone();
+        this.changedDocument = document.clone();
+        this.cdr.markForCheck();
+      },
+      err => {
+        console.error(err);
+        this.unexpectedServerError = err.message;
+        this.cdr.markForCheck();
+      },
+      defect => {
+        console.error(defect);
+        this.unexpectedServerError = String(defect);
+        this.cdr.markForCheck();
+      },
     );
-
-    this.managementService.putDocument(docRef, this.changedDocument.content).subscribe({
-      next: (document) => {
-        this.originalDocument = deepClone(document);
-        this.changedDocument = deepClone(document);
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        if (err.status === 400) {
-          this.validationResult = (err.error as InvalidDocumentError).validationResult;
-        } else {
-          this.unexpectedServerError = err.error;
-        }
-
-        this.cdr.markForCheck();
-      },
-    });
   }
 
   ngOnDestroy() {

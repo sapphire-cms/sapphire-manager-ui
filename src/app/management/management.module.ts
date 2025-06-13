@@ -1,14 +1,13 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {StoreList} from './store-list/store-list.component';
-import {ManagementService} from './management.service';
+import {ManagementClient} from './management-client.service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ManagementComponent} from './management/management.component';
 import {RouterModule} from '@angular/router';
 import {StoreDetailsComponent} from './store-details/store-details.component';
 import {ContentSchemaResolver} from './content-schema.resolver';
 import {DocumentEditComponent} from './document-edit/document-edit.component';
-import {DocumentResolver} from './document.resolver';
 import {routes} from './management-routes';
 import {FormsModule} from '../forms/forms.module';
 import {DefaultInputsModule} from '../default-inputs/default-inputs.module';
@@ -17,11 +16,8 @@ import {ContentTypeIconComponent} from './content-type-icon/content-type-icon.co
 import {DocPathNavbarComponent} from './doc-path-navbar/doc-path-navbar.component';
 import {ReferenceInputComponent} from './reference-input/reference-input.component';
 import {InputsRegistryService} from '../inputs-base/inputs-registry.service';
-import {TextInputComponent} from '../default-inputs/text-input/text-input.component';
-import {CheckInputComponent} from '../default-inputs/check-input/check-input.component';
-import {NumberInputComponent} from '../default-inputs/number-input/number-input.component';
-import {TagInputComponent} from '../default-inputs/tag-input/tag-input.component';
 import {DocumentPickerComponent} from './document-picker/document-picker.component';
+import {ManagementService} from './management.service';
 
 @NgModule({
   imports: [
@@ -43,9 +39,9 @@ import {DocumentPickerComponent} from './document-picker/document-picker.compone
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
+    ManagementClient,
     ManagementService,
     ContentSchemaResolver,
-    DocumentResolver,
   ]
 })
 export class ManagementModule {

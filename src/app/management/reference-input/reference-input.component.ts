@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {AbstractInput} from '../../inputs-base/abstract-input';
-import {ManagementService} from '../management.service';
+import {ManagementClient} from '../management-client.service';
 import {ContentSchema, ContentType, DocumentInfo, DocumentReference} from '@sapphire-cms/core';
 
 @Component({
@@ -16,7 +16,7 @@ export class ReferenceInputComponent extends AbstractInput<string> {
   protected documents: DocumentInfo[] = [];
   protected pickedShown = false;
 
-  constructor(private readonly managementService: ManagementService,
+  constructor(private readonly managementService: ManagementClient,
               private readonly cdr: ChangeDetectorRef) {
     super();
   }
