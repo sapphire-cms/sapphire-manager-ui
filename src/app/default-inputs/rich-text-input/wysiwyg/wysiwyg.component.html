@@ -1,0 +1,69 @@
+<div class="field has-addons is-inline-flex">
+  <p class="control">
+    <button type="button"
+            class="button is-small"
+            title="Bold"
+            [class.is-info]="editor.isActive('bold')"
+            (click)="editor.chain().focus().toggleBold().run()">
+      <span class="icon is-small">
+        <i class="fas fa-bold"></i>
+      </span>
+    </button>
+  </p>
+
+  <p class="control">
+    <button type="button"
+            class="button is-small"
+            title="Italic"
+            [class.is-info]="editor.isActive('italic')"
+            (click)="editor.chain().focus().toggleItalic().run()">
+      <span class="icon is-small">
+        <i class="fas fa-italic"></i>
+      </span>
+    </button>
+  </p>
+
+  <p class="control">
+    <button type="button"
+            class="button is-small"
+            title="Underline">
+      <span class="icon is-small">
+        <i class="fas fa-underline"></i>
+      </span>
+    </button>
+  </p>
+</div>
+
+<div class="field has-addons is-inline-flex">
+  <p class="control">
+    <button type="button"
+            class="button is-small"
+            title="Left">
+      <span class="icon is-small">
+        <i class="fas fa-align-left"></i>
+      </span>
+    </button>
+  </p>
+
+  <p class="control">
+    <button type="button"
+            class="button is-small"
+            title="Center">
+      <span class="icon is-small">
+        <i class="fas fa-align-center"></i>
+      </span>
+    </button>
+  </p>
+
+  <p class="control">
+    <button type="button"
+            class="button is-small"
+            title="Right">
+      <span class="icon is-small">
+        <i class="fas fa-align-right"></i>
+      </span>
+    </button>
+  </p>
+</div>
+
+<tiptap-editor [editor]="editor" [ngModel]="value"></tiptap-editor>

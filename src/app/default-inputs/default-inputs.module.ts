@@ -5,6 +5,11 @@ import {InputsRegistryService} from '../inputs-base/inputs-registry.service';
 import {CheckInputComponent} from './check-input/check-input.component';
 import {NumberInputComponent} from './number-input/number-input.component';
 import {TagInputComponent} from './tag-input/tag-input.component';
+import {RichTextInputComponent} from './rich-text-input/rich-text-input.component';
+import {RawComponent} from './rich-text-input/raw/raw.component';
+import {TiptapEditorDirective} from 'ngx-tiptap';
+import {FormsModule} from '@angular/forms';
+import {WysiwygComponent} from './rich-text-input/wysiwyg/wysiwyg.component';
 
 @NgModule({
   declarations: [
@@ -12,9 +17,14 @@ import {TagInputComponent} from './tag-input/tag-input.component';
     CheckInputComponent,
     NumberInputComponent,
     TagInputComponent,
+    RawComponent,
+    WysiwygComponent,
+    RichTextInputComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    TiptapEditorDirective,
   ]
 })
 export class DefaultInputsModule {
@@ -23,5 +33,6 @@ export class DefaultInputsModule {
     inputsRegistry.register('check', CheckInputComponent);
     inputsRegistry.register('number', NumberInputComponent);
     inputsRegistry.register('tag', TagInputComponent);
+    inputsRegistry.register('rich-text', RichTextInputComponent);
   }
 }
