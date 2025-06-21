@@ -3,8 +3,6 @@ import {HttpClient} from '@angular/common/http';
 
 @Injectable()
 export class AdminService {
-  private static readonly server = 'http://0.0.0.0:8083';
-
   constructor(private http: HttpClient) {
   }
 

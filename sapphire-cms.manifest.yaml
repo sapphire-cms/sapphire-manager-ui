@@ -1,0 +1,5 @@
+web:
+  - name: manager-ui
+    root: ./dist/sapphire-manager-ui/browser
+    mount: /manager-ui
+    spa: true

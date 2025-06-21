@@ -14,21 +14,19 @@ import {MissingDocumentError, UnexpectedServerError} from '../../utils/errors';
 
 @Injectable()
 export class ManagementClient {
-  private static readonly server = 'http://0.0.0.0:8083';
-
   constructor(private http: HttpClient) {
   }
 
   public listStores(): Observable<ContentSchema[]> {
-    return this.http.get<ContentSchema[]>(ManagementClient.server + '/rest/management/stores');
+    return this.http.get<ContentSchema[]>('/rest/management/stores');
   }
 
   public getContentSchema(store: string): Observable<ContentSchema> {
-    return this.http.get<ContentSchema>(ManagementClient.server + `/rest/management/stores/${store}`);
+    return this.http.get<ContentSchema>(`/rest/management/stores/${store}`);
   }
 
   public listDocuments(store: string): Observable<DocumentInfo[]> {
-    return this.http.get<DocumentInfo[]>(ManagementClient.server + `/rest/management/stores/${store}/list`);
+    return this.http.get<DocumentInfo[]>(`/rest/management/stores/${store}/list`);
   }
 
   public fetchDocument(docRef: DocumentReference): Outcome<Document, MissingDocumentError | UnexpectedServerError> {
@@ -36,7 +34,7 @@ export class ManagementClient {
 
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
-        .get<Document>(ManagementClient.server + `/rest/management/stores/${docRef.store}/docs/${docPath}`)
+        .get<Document>(`/rest/management/stores/${docRef.store}/docs/${docPath}`)
         .pipe(catchError(err => {
           if (err.status === 404) {
             onFailure(new MissingDocumentError(err.error));
@@ -55,7 +53,7 @@ export class ManagementClient {
 
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
-        .put<Document>(ManagementClient.server + `/rest/management/stores/${docRef.store}/docs/${docPath}`, content)
+        .put<Document>(`/rest/management/stores/${docRef.store}/docs/${docPath}`, content)
         .pipe(catchError(err => {
           if (err.status === 400) {
             onFailure(err.error);
@@ -71,6 +69,6 @@ export class ManagementClient {
 
   public deleteDocument(docRef: DocumentReference): Observable<Document> {
     const docPath = [ ...docRef.path, docRef.docId ].filter(token => token).join('/');
-    return this.http.delete<Document>(ManagementClient.server + `/rest/management/stores/${docRef.store}/docs/${docPath}`);
+    return this.http.delete<Document>(`/rest/management/stores/${docRef.store}/docs/${docPath}`);
   }
 }
