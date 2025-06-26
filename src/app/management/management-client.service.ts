@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {catchError, Observable, throwError} from 'rxjs';
 import {
   ContentSchema,
@@ -30,11 +30,11 @@ export class ManagementClient {
   }
 
   public fetchDocument(docRef: DocumentReference): Outcome<Document, MissingDocumentError | UnexpectedServerError> {
-    const docPath = [ ...docRef.path, docRef.docId ].filter(token => token).join('/');
-
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
-        .get<Document>(`/rest/management/stores/${docRef.store}/docs/${docPath}`)
+        .get<Document>(`/rest/management/stores/${docRef.store}/docs`, {
+          params: ManagementClient.docRefToParams(docRef),
+        })
         .pipe(catchError(err => {
           if (err.status === 404) {
             onFailure(new MissingDocumentError(err.error));
@@ -49,11 +49,11 @@ export class ManagementClient {
   }
 
   public putDocument(docRef: DocumentReference, content: DocumentContent): Outcome<Document, InvalidDocumentError | UnexpectedServerError> {
-    const docPath = [ ...docRef.path, docRef.docId ].filter(token => token).join('/');
-
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
-        .put<Document>(`/rest/management/stores/${docRef.store}/docs/${docPath}`, content)
+        .put<Document>(`/rest/management/stores/${docRef.store}/docs`, content, {
+          params: ManagementClient.docRefToParams(docRef),
+        })
         .pipe(catchError(err => {
           if (err.status === 400) {
             onFailure(err.error);
@@ -68,7 +68,26 @@ export class ManagementClient {
   }
 
   public deleteDocument(docRef: DocumentReference): Observable<Document> {
-    const docPath = [ ...docRef.path, docRef.docId ].filter(token => token).join('/');
-    return this.http.delete<Document>(`/rest/management/stores/${docRef.store}/docs/${docPath}`);
+    return this.http.delete<Document>(`/rest/management/stores/${docRef.store}/docs`, {
+      params: ManagementClient.docRefToParams(docRef),
+    });
+  }
+
+  private static docRefToParams(docRef: DocumentReference): HttpParams {
+    let params = new HttpParams();
+
+    docRef.path.forEach(token => {
+      params = params.append('p', token);
+    });
+
+    if (docRef.docId) {
+      params = params.set('d', docRef.docId);
+    }
+
+    if (docRef.variant) {
+      params = params.set('v', docRef.variant);
+    }
+
+    return params;
   }
 }
