@@ -29,6 +29,9 @@ export class ManagementService {
         const fullDocument = new FullDocument(
           new DocumentReference(document.store, document.path, document.id, document.variant),
           document.type,
+          document.status,
+          document.createdAt,
+          document.lastModifiedAt,
           document.content as FullDocumentContent,
         );
 

@@ -18,6 +18,7 @@ import {ReferenceInputComponent} from './reference-input/reference-input.compone
 import {InputsRegistryService} from '../inputs-base/inputs-registry.service';
 import {DocumentPickerComponent} from './document-picker/document-picker.component';
 import {ManagementService} from './management.service';
+import {DocumentStatusBarComponent} from './document-status-bar/document-status-bar.component';
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import {ManagementService} from './management.service';
     StoreList,
     ManagementComponent,
     StoreDetailsComponent,
+    DocumentStatusBarComponent,
     DocumentCreateComponent,
     DocumentEditComponent,
     DocumentPickerComponent,

@@ -1,0 +1,32 @@
+<nav class="level">
+  <div class="level-left">
+    <div class="level-item">
+      <span class="tag is-info is-light">
+        @switch (document.status) {
+          @case (DocumentStatus.DRAFT) {
+            <i class="fas fa-pen-to-square mr-1"></i>
+            <span>Draft</span>
+          }
+
+          @case (DocumentStatus.PUBLISHED) {
+            <i class="fas fa-check-circle mr-1"></i>
+            <span>Published</span>
+          }
+        }
+      </span>
+    </div>
+  </div>
+
+  <div class="level-right">
+    <div class="level-item">
+      <small class="has-text-grey">
+        Created: {{ document.createdAt }}
+      </small>
+    </div>
+    <div class="level-item">
+      <small class="has-text-grey">
+        Last updated: {{ document.lastModifiedAt }}
+      </small>
+    </div>
+  </div>
+</nav>

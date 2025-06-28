@@ -11,6 +11,7 @@ import {
 } from '@sapphire-cms/core';
 import {Outcome} from 'defectless';
 import {MissingDocumentError, UnexpectedServerError} from '../../utils/errors';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class ManagementClient {
@@ -18,21 +19,21 @@ export class ManagementClient {
   }
 
   public listStores(): Observable<ContentSchema[]> {
-    return this.http.get<ContentSchema[]>('/rest/management/stores');
+    return this.http.get<ContentSchema[]>(environment.baseUrl + '/rest/management/stores');
   }
 
   public getContentSchema(store: string): Observable<ContentSchema> {
-    return this.http.get<ContentSchema>(`/rest/management/stores/${store}`);
+    return this.http.get<ContentSchema>(environment.baseUrl + `/rest/management/stores/${store}`);
   }
 
   public listDocuments(store: string): Observable<DocumentInfo[]> {
-    return this.http.get<DocumentInfo[]>(`/rest/management/stores/${store}/list`);
+    return this.http.get<DocumentInfo[]>(environment.baseUrl + `/rest/management/stores/${store}/list`);
   }
 
   public fetchDocument(docRef: DocumentReference): Outcome<Document, MissingDocumentError | UnexpectedServerError> {
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
-        .get<Document>(`/rest/management/stores/${docRef.store}/docs`, {
+        .get<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, {
           params: ManagementClient.docRefToParams(docRef),
         })
         .pipe(catchError(err => {
@@ -51,7 +52,7 @@ export class ManagementClient {
   public putDocument(docRef: DocumentReference, content: DocumentContent): Outcome<Document, InvalidDocumentError | UnexpectedServerError> {
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
-        .put<Document>(`/rest/management/stores/${docRef.store}/docs`, content, {
+        .put<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, content, {
           params: ManagementClient.docRefToParams(docRef),
         })
         .pipe(catchError(err => {
@@ -68,7 +69,13 @@ export class ManagementClient {
   }
 
   public deleteDocument(docRef: DocumentReference): Observable<Document> {
-    return this.http.delete<Document>(`/rest/management/stores/${docRef.store}/docs`, {
+    return this.http.delete<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, {
+      params: ManagementClient.docRefToParams(docRef),
+    });
+  }
+
+  public publishDocument(docRef: DocumentReference): Observable<void> {
+    return this.http.post<void>(environment.baseUrl + `/rest/management/stores/${docRef.store}/actions/publish`, null, {
       params: ManagementClient.docRefToParams(docRef),
     });
   }

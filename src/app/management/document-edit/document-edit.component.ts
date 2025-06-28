@@ -1,12 +1,13 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ContentSchema,} from '@sapphire-cms/core';
+import {ContentSchema, DocumentReference,} from '@sapphire-cms/core';
 import {map, Subject, takeUntil} from 'rxjs';
 import {CONTENT_SCHEMA_KEY} from '../content-schema.resolver';
 import deepEqual from 'fast-deep-equal/es6';
 import {DOCUMENT_REFERENCE} from '../doc-ref.resolver';
 import {ManagementService} from '../management.service';
 import {FullDocument} from '../../forms/forms.types';
+import {ManagementClient} from '../management-client.service';
 
 @Component({
   selector: 'scms-document-edit',
@@ -15,6 +16,7 @@ import {FullDocument} from '../../forms/forms.types';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentEditComponent implements OnDestroy {
+  protected docRef!: DocumentReference;
   protected contentSchema!: ContentSchema;
   protected originalDocument!: FullDocument;
   protected changedDocument!: FullDocument;
@@ -22,29 +24,16 @@ export class DocumentEditComponent implements OnDestroy {
 
   private readonly destroy$ = new Subject();
 
-  constructor(private readonly managementService: ManagementService,
+  constructor(private readonly managementClient: ManagementClient,
+              private readonly managementService: ManagementService,
               private readonly activatedRoute: ActivatedRoute,
               private readonly cdr: ChangeDetectorRef) {
     this.activatedRoute.data
       .pipe(map(data => data[DOCUMENT_REFERENCE]), takeUntil(this.destroy$))
       .subscribe(docRef => {
+        this.docRef = docRef;
         this.contentSchema = this.activatedRoute.parent?.parent?.snapshot.data[CONTENT_SCHEMA_KEY];
-
-        this.managementService.loadDocument(docRef, this.contentSchema).match(
-          document => {
-            this.originalDocument = document.clone();
-            this.changedDocument = document.clone();
-            this.cdr.markForCheck();
-          },
-          err => {
-            this.unexpectedServerError = err.message;
-            this.cdr.markForCheck();
-          },
-          defect => {
-            this.unexpectedServerError = String(defect);
-            this.cdr.markForCheck();
-          },
-        );
+        this.loadDocument();
       });
   }
 
@@ -76,8 +65,32 @@ export class DocumentEditComponent implements OnDestroy {
     );
   }
 
+  protected publish() {
+    this.managementClient.publishDocument(this.docRef).subscribe(() => {
+      this.loadDocument();
+    });
+  }
+
   ngOnDestroy() {
     this.destroy$.next(null);
     this.destroy$.complete();
+  }
+
+  private loadDocument() {
+    this.managementService.loadDocument(this.docRef, this.contentSchema).match(
+      document => {
+        this.originalDocument = document.clone();
+        this.changedDocument = document.clone();
+        this.cdr.markForCheck();
+      },
+      err => {
+        this.unexpectedServerError = err.message;
+        this.cdr.markForCheck();
+      },
+      defect => {
+        this.unexpectedServerError = String(defect);
+        this.cdr.markForCheck();
+      },
+    );
   }
 }

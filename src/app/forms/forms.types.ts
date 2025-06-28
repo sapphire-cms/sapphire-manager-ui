@@ -3,7 +3,7 @@ import {
   ContentType,
   ContentValidationResult,
   createHiddenCollectionSchema,
-  DocumentReference,
+  DocumentReference, DocumentStatus,
   FieldsValidationResult, FieldTypeSchema,
   ValidationResult,
 } from '@sapphire-cms/core';
@@ -75,12 +75,18 @@ export class FullDocument implements Clonable<FullDocument> {
     return new FullDocument(
       new DocumentReference(contentSchema.name, []),
       contentSchema.type,
+      DocumentStatus.DRAFT,
+      '',
+      '',
       content,
     );
   }
 
   constructor(public ref: DocumentReference,
               public type: ContentType,
+              public status: DocumentStatus,
+              public createdAt: string,
+              public lastModifiedAt: string,
               public content: FullDocumentContent,
               public validation?: ContentValidationResult) {
   }
@@ -131,6 +137,9 @@ export class FullDocument implements Clonable<FullDocument> {
     return new FullDocument(
       documentReferenceCloner(this.ref),
       this.type,
+      this.status,
+      this.createdAt,
+      this.lastModifiedAt,
       content,
       validation,
     );
