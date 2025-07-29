@@ -1,0 +1,7 @@
+/*
+ * Hack for resizable Monaco editor
+ * @see https://stackoverflow.com/a/71876526/4437630
+ */
+.monaco-editor {
+  position: absolute !important;
+}
