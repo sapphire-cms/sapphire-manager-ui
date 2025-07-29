@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  ElementRef, HostListener,
+  ElementRef,
   NgZone,
   OnDestroy,
   ViewChild
@@ -14,7 +14,6 @@ import * as monaco from 'monaco-editor';
   selector: 'scms-raw',
   standalone: false,
   templateUrl: './raw.component.html',
-  styleUrl: './raw.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RawComponent extends AbstractInput<string> implements AfterViewInit, OnDestroy {
@@ -23,7 +22,6 @@ export class RawComponent extends AbstractInput<string> implements AfterViewInit
   private readonly editorContainer!: ElementRef<HTMLDivElement>;
 
   private editorInstance!: monaco.editor.IStandaloneCodeEditor;
-  // private resizeObserver!: ResizeObserver;
 
   constructor(private readonly zone: NgZone) {
     super();
@@ -46,28 +44,10 @@ export class RawComponent extends AbstractInput<string> implements AfterViewInit
         const content = this.editorInstance.getValue();
         this.valueChange.emit(content);
       });
-
-      // this.resizeObserver = new ResizeObserver(() => {
-      //   console.log('resize!');
-      //   this.editorInstance.layout();
-      // });
-      //
-      // this.resizeObserver.observe(this.editorContainer.nativeElement);
     });
-
-
   }
 
-  // @HostListener('window:resize', ['$event'])
-  // onResize(event: UIEvent) {
-  //   console.log('Window resized', event);
-  //   this.editorInstance.layout();
-  //   // e.g., call your monaco editor layout:
-  //   // this.editor?.layout();
-  // }
-
   ngOnDestroy(): void {
-    // this.resizeObserver.disconnect();
     this.editorInstance?.dispose();
   }
 }
