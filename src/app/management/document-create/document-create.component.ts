@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
-import {ContentSchema, ContentType,} from '@sapphire-cms/core';
+import {ContentSchema, ContentType, DocumentReference,} from '@sapphire-cms/core';
 import {map, Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CONTENT_SCHEMA_KEY} from '../content-schema.resolver';
@@ -48,7 +48,10 @@ export class DocumentCreateComponent implements OnDestroy {
   }
 
   protected saveDocument() {
-    this.managementService.saveDocument(this.document!, this.contentSchema).match(
+    const documentCopy = this.document!.clone();
+    documentCopy.ref = new DocumentReference(this.contentSchema.name, this.path, this.docId);
+
+    this.managementService.saveDocument(documentCopy, this.contentSchema).match(
       document => {
         if (document.valid) {
           const ref = document.ref;
