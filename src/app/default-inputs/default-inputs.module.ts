@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {TextInputComponent} from './text-input/text-input.component';
 import {InputsRegistryService} from '../inputs-base/inputs-registry.service';
 import {CheckInputComponent} from './check-input/check-input.component';
@@ -10,6 +10,7 @@ import {RawComponent} from './rich-text-input/raw/raw.component';
 import {TiptapEditorDirective} from 'ngx-tiptap';
 import {FormsModule} from '@angular/forms';
 import {WysiwygComponent} from './rich-text-input/wysiwyg/wysiwyg.component';
+import {MonacoEditorModule} from 'ngx-monaco-editor-v2';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import {WysiwygComponent} from './rich-text-input/wysiwyg/wysiwyg.component';
   imports: [
     CommonModule,
     FormsModule,
+    MonacoEditorModule.forRoot(),
     TiptapEditorDirective,
   ]
 })

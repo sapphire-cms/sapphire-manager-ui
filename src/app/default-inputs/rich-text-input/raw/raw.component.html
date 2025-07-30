@@ -4,4 +4,8 @@
   </div>
 </article>
 
-<div #editorContainer class="textarea" style="height: 20rem;"></div>
+<ngx-monaco-editor class="textarea"
+                   [options]="editorOptions"
+                   [ngModel]="value"
+                   (ngModelChange)="valueChange.emit($event)">
+</ngx-monaco-editor>
