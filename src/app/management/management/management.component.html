@@ -4,7 +4,8 @@
       <scms-store-list [stores]="stores"></scms-store-list>
     </div>
 
-    <div class="column">
+    <!-- min-width: 0; is a hack necessary for proper resizing of Monaco editor -->
+    <div class="column" style="min-width: 0;">
       <router-outlet></router-outlet>
     </div>
   </div>
