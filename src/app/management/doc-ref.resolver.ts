@@ -1,5 +1,5 @@
 import { ResolveFn } from '@angular/router';
-import {DocumentReference} from '../../../../sapphire-cms/packages/core';
+import {DocumentReference} from '@sapphire-cms/core';
 
 export const DOCUMENT_REFERENCE = 'document';
 

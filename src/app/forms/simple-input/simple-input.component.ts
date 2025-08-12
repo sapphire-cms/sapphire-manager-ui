@@ -12,7 +12,7 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {FieldSchema} from '../../../../../sapphire-cms/packages/core';
+import {FieldSchema} from '@sapphire-cms/core';
 import {AbstractInput} from '../../inputs-base/abstract-input';
 import {InputsRegistryService} from '../../inputs-base/inputs-registry.service';
 import {PrimitiveValue} from '../forms.types';

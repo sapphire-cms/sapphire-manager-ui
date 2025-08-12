@@ -3,14 +3,14 @@ import {HttpClient} from '@angular/common/http';
 
 @Injectable()
 export class AdminService {
-  constructor(private http: HttpClient) {
+  constructor(private readonly _http: HttpClient) {
   }
 
-  public installPackages(packageNames: string[]) {
+  public installPackages(_packageNames: string[]) {
     // TODO: implement
   }
 
-  public removePackages(packageNames: string[]) {
+  public removePackages(_packageNames: string[]) {
     // TODO: implement
   }
 }

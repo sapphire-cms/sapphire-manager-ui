@@ -1,7 +1,10 @@
 {
   "name": "@sapphire-cms/manager-ui",
   "private": false,
-  "version": "0.1.7",
+  "version": "0.1.9",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Content management and administration interface for Sapphire CMS.",
   "main": "dist/sapphire-manager-ui/browser/index.html",
   "exports": {
@@ -25,12 +28,12 @@
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
     "@fortawesome/fontawesome-free": "^6.7.2",
-    "@sapphire-cms/core": "0.1.7",
+    "@sapphire-cms/core": "0.2.0",
     "@tiptap/core": "^2.22.0",
     "@tiptap/starter-kit": "^2.22.0",
     "bulma": "^1.0.4",
     "bulma-switch-control": "^1.2.2",
-    "defectless": "0.1.7",
+    "defectless": "0.2.0",
     "fast-deep-equal": "^3.1.3",
     "monaco-editor": "^0.52.2",
     "ngx-monaco-editor-v2": "^20.0.0",
@@ -55,12 +58,14 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "rimraf": "^6.0.1",
     "typescript": "~5.8.2",
     "typescript-eslint": "8.32.1"
   },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "clean": "rimraf dist",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

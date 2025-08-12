@@ -13,7 +13,7 @@ import {
   createHiddenCollectionSchema,
   FieldSchema,
   ValidationResult
-} from '../../../../../sapphire-cms/packages/core';
+} from '@sapphire-cms/core';
 import {EditableList, FullDocument} from '../forms.types';
 
 @Component({

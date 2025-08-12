@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {FullDocument} from '../../forms/forms.types';
-import {DocumentStatus} from '../../../../../sapphire-cms/packages/core';
+import {DocumentStatus} from '@sapphire-cms/core';
 
 @Component({
   selector: 'scms-document-status-bar',
