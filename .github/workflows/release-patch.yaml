@@ -34,7 +34,7 @@ jobs:
           npm version patch -m "HOTFIX: %s"
 
       - name: Build
-        run: npm run build:all
+        run: npm run build
 
       - name: Publish
         env:
