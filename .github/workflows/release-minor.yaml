@@ -22,39 +22,24 @@ jobs:
           cache: 'npm'
 
       - name: Install
-        run: npm ci
+        run: npm ci --force
 
       - name: Configure Git author
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump minor version with Lerna (no tag/push yet)
+      - name: Bump minor version
         run: |
-          echo "Bumping version..."
-          lerna version minor --yes --no-push --no-git-tag-version
-
-          echo "Sync root package.json version with lerna.json..."
-          PROJECT_VERSION=$(node -p "require('./lerna.json').version")
-          jq ".version=\"$PROJECT_VERSION\"" package.json > package.json.tmp && mv package.json.tmp package.json
-
-          echo "Install to refresh lockfiles (if any)"
-          npm install
-
-          echo "Commit version bump + lockfiles"
-          git add -A
-          git commit -m "HOTFIX ${PROJECT_VERSION}"
-
-          echo "Create git tag v${PROJECT_VERSION}"
-          git tag -a "v${PROJECT_VERSION}" -m "RELEASE ${PROJECT_VERSION}"
+          npm version minor -m "RELEASE: %s"
 
       - name: Build
-        run: npm run build:all
+        run: npm run build
 
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: lerna publish from-package --yes --no-private
+        run: npm publish --yes --no-private
 
       - name: Push commit and tag
         run: |
