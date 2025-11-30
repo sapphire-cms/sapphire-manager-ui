@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import packageJson from '../../../../package.json';
+import {AuthenticationService} from '../../authentication/authentication.service';
 
 @Component({
   selector: 'scms-navbar',
@@ -9,4 +10,7 @@ import packageJson from '../../../../package.json';
 })
 export class NavbarComponent {
   public version = packageJson.version;
+
+  constructor(protected readonly authenticationService: AuthenticationService) {
+  }
 }

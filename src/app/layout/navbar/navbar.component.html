@@ -14,31 +14,52 @@
 
   <div class="navbar-menu">
     <div class="navbar-end">
-      <div scmsDropdown
-           class="navbar-item has-dropdown">
-        <a class="navbar-link">
-          <span>More</span>
-        </a>
-
-        <div class="navbar-dropdown is-boxed is-right">
-          <a class="navbar-item">
-            <span class="icon">
-              <i class="fa-solid fa-gear"></i>
-            </span>
-            <span>Settings</span>
-          </a>
-
-          <a class="navbar-item"
-             target="_blank"
-             rel="noopener noreferrer"
-             href="https://sapphire-cms.io/docs">
+      <a class="navbar-item"
+         target="_blank"
+         rel="noopener noreferrer"
+         href="https://sapphire-cms.io/docs">
             <span class="icon">
               <i class="fa-solid fa-question"></i>
             </span>
-            <span>Help</span>
+        <span>Help</span>
+      </a>
+
+      @if (!(authenticationService.isAuthenticated$ | async)) {
+        <a class="navbar-item" routerLink="/login">
+          <span class="icon">
+            <i class="fa-solid fa-sign-out-alt"></i>
+          </span>
+          <span>Login</span>
+        </a>
+      }
+
+      @if (authenticationService.isAuthenticated$ | async) {
+        <div scmsDropdown
+             class="navbar-item has-dropdown">
+          <a class="navbar-link">
+            <span>More</span>
           </a>
+
+          <div class="navbar-dropdown is-boxed is-right">
+            <a class="navbar-item">
+              <span class="icon">
+                <i class="fa-solid fa-gear"></i>
+              </span>
+              <span>Settings</span>
+            </a>
+
+            <hr class="navbar-divider">
+
+            <a class="navbar-item"
+               (click)="authenticationService.logout()">
+              <span class="icon">
+                <i class="fa-solid fa-sign-out-alt"></i>
+              </span>
+              <span>Logout</span>
+            </a>
+          </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </nav>

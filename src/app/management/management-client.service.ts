@@ -15,7 +15,7 @@ import {environment} from '../../environments/environment';
 
 @Injectable()
 export class ManagementClient {
-  constructor(private http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
   }
 
   public listStores(): Observable<ContentSchema[]> {

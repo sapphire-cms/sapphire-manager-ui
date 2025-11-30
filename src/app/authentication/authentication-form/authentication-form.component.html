@@ -1,0 +1,35 @@
+<form class="box"
+      [formGroup]="formControls"
+      (submit)="login()">
+  <div class="field">
+    <label class="label">Username</label>
+    <div class="control">
+      <input class="input"
+             type="text"
+             placeholder="e.g. admin"
+             formControlName="username"
+             [class.is-danger]="wrongCredentials" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Password</label>
+    <div class="control">
+      <input class="input"
+             type="password"
+             placeholder="********"
+             formControlName="password"
+             [class.is-danger]="wrongCredentials" />
+    </div>
+
+    @if (wrongCredentials) {
+      <p class="help is-danger">
+        Wrong username and password.
+      </p>
+    }
+  </div>
+
+  <div class="field is-grouped is-grouped-centered">
+    <button type="submit" class="button is-main">Login</button>
+  </div>
+</form>

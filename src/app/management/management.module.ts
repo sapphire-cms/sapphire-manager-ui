@@ -19,12 +19,14 @@ import {InputsRegistryService} from '../inputs-base/inputs-registry.service';
 import {DocumentPickerComponent} from './document-picker/document-picker.component';
 import {ManagementService} from './management.service';
 import {DocumentStatusBarComponent} from './document-status-bar/document-status-bar.component';
+import {AuthenticationModule} from '../authentication/authentication.module';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     FormsModule,
+    AuthenticationModule,
     DefaultInputsModule,  // TODO: think where to place it
   ],
   declarations: [
