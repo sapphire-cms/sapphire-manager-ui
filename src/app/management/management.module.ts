@@ -20,6 +20,7 @@ import {DocumentPickerComponent} from './document-picker/document-picker.compone
 import {ManagementService} from './management.service';
 import {DocumentStatusBarComponent} from './document-status-bar/document-status-bar.component';
 import {AuthenticationModule} from '../authentication/authentication.module';
+import {DocumentResolver} from './document.resolver';
 
 @NgModule({
   imports: [
@@ -46,6 +47,7 @@ import {AuthenticationModule} from '../authentication/authentication.module';
     ManagementClient,
     ManagementService,
     ContentSchemaResolver,
+    DocumentResolver,
   ]
 })
 export class ManagementModule {

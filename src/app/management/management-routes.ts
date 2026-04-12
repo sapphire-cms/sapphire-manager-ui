@@ -5,7 +5,7 @@ import {StoreDetailsComponent} from './store-details/store-details.component';
 import {CONTENT_SCHEMA_KEY, ContentSchemaResolver} from './content-schema.resolver';
 import {DocumentEditComponent} from './document-edit/document-edit.component';
 import {DocumentCreateComponent} from './document-create/document-create.component';
-import {docRefResolver, DOCUMENT_REFERENCE} from './doc-ref.resolver';
+import {DOCUMENT_KEY, DocumentResolver} from './document.resolver';
 
 export const routes: Routes = [
   {
@@ -39,7 +39,7 @@ export const routes: Routes = [
                 path: '**',
                 component: DocumentEditComponent,
                 resolve: {
-                  [DOCUMENT_REFERENCE]: docRefResolver,
+                  [DOCUMENT_KEY]: DocumentResolver,
                 },
               }
             ],

@@ -1,13 +1,13 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ContentSchema, DocumentReference,} from '@sapphire-cms/core';
-import {map, Subject, takeUntil} from 'rxjs';
+import {ContentSchema,} from '@sapphire-cms/core';
+import {Subject, takeUntil} from 'rxjs';
 import {CONTENT_SCHEMA_KEY} from '../content-schema.resolver';
 import deepEqual from 'fast-deep-equal/es6';
-import {DOCUMENT_REFERENCE} from '../doc-ref.resolver';
 import {ManagementService} from '../management.service';
 import {FullDocument} from '../../forms/forms.types';
 import {ManagementClient} from '../management-client.service';
+import {DOCUMENT_KEY} from '../document.resolver';
 
 @Component({
   selector: 'scms-document-edit',
@@ -16,7 +16,7 @@ import {ManagementClient} from '../management-client.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentEditComponent implements OnDestroy {
-  protected docRef!: DocumentReference;
+  // protected docRef!: DocumentReference;
   protected contentSchema!: ContentSchema;
   protected originalDocument!: FullDocument;
   protected changedDocument!: FullDocument;
@@ -29,11 +29,13 @@ export class DocumentEditComponent implements OnDestroy {
               private readonly activatedRoute: ActivatedRoute,
               private readonly cdr: ChangeDetectorRef) {
     this.activatedRoute.data
-      .pipe(map(data => data[DOCUMENT_REFERENCE]), takeUntil(this.destroy$))
-      .subscribe(docRef => {
-        this.docRef = docRef;
-        this.contentSchema = this.activatedRoute.parent?.parent?.snapshot.data[CONTENT_SCHEMA_KEY];
-        this.loadDocument();
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(data => {
+        // this.docRef = data[DOCUMENT_REFERENCE];
+        this.contentSchema = data[CONTENT_SCHEMA_KEY];
+        this.originalDocument = (data[DOCUMENT_KEY] as FullDocument).clone();
+        this.changedDocument = this.originalDocument.clone();
+        // this.loadDocument();
       });
   }
 
@@ -66,7 +68,7 @@ export class DocumentEditComponent implements OnDestroy {
   }
 
   protected publish() {
-    this.managementClient.publishDocument(this.docRef).subscribe(() => {
+    this.managementClient.publishDocument(this.originalDocument.ref).subscribe(() => {
       this.loadDocument();
     });
   }
@@ -77,7 +79,7 @@ export class DocumentEditComponent implements OnDestroy {
   }
 
   private loadDocument() {
-    this.managementService.loadDocument(this.docRef, this.contentSchema).match(
+    this.managementService.loadDocument(this.originalDocument.ref, this.contentSchema).match(
       document => {
         this.originalDocument = document.clone();
         this.changedDocument = document.clone();
