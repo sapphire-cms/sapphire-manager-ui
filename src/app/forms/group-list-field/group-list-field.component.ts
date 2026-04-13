@@ -52,8 +52,9 @@ export class GroupListFieldComponent implements OnInit {
   }
 
   protected onValueChange(index: number, newValue: FullDocument) {
-    this.editableList.set(index, newValue);
-    this.groupDocsChange.emit(this.editableList.toArray());
+    const clone = new EditableList<FullDocument>(this.editableList.toArray());
+    clone.set(index, newValue);
+    this.groupDocsChange.emit(clone.toArray());
   }
 
   protected moveUp(index: number) {
