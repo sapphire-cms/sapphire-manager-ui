@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {catchError, Observable, throwError} from 'rxjs';
+import {catchError, finalize, Observable, throwError} from 'rxjs';
 import {
   ContentSchema,
   Document,
@@ -12,72 +12,121 @@ import {
 import {Outcome} from 'defectless';
 import {MissingDocumentError, UnexpectedServerError} from '../../utils/errors';
 import {environment} from '../../environments/environment';
+import {LoaderService} from '../layout/loader.service';
 
 @Injectable()
 export class ManagementClient {
-  constructor(private readonly http: HttpClient) {
+  constructor(private readonly http: HttpClient,
+              private loaderService: LoaderService) {
   }
 
   public listStores(): Observable<ContentSchema[]> {
-    return this.http.get<ContentSchema[]>(environment.baseUrl + '/rest/management/stores');
+    this.loaderService.loading = true;
+    return this.http
+      .get<ContentSchema[]>(environment.baseUrl + '/rest/management/stores')
+      .pipe(
+        finalize(() => {
+          this.loaderService.loading = false;
+        })
+      );
   }
 
   public getContentSchema(store: string): Observable<ContentSchema> {
-    return this.http.get<ContentSchema>(environment.baseUrl + `/rest/management/stores/${store}`);
+    this.loaderService.loading = true;
+    return this.http
+      .get<ContentSchema>(environment.baseUrl + `/rest/management/stores/${store}`)
+      .pipe(
+        finalize(() => {
+          this.loaderService.loading = false;
+        })
+      );
   }
 
   public listDocuments(store: string): Observable<DocumentInfo[]> {
-    return this.http.get<DocumentInfo[]>(environment.baseUrl + `/rest/management/stores/${store}/list`);
+    this.loaderService.loading = true;
+    return this.http
+      .get<DocumentInfo[]>(environment.baseUrl + `/rest/management/stores/${store}/list`)
+      .pipe(
+        finalize(() => {
+          this.loaderService.loading = false;
+        })
+      );
   }
 
   public fetchDocument(docRef: DocumentReference): Outcome<Document, MissingDocumentError | UnexpectedServerError> {
+    this.loaderService.loading = true;
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
         .get<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, {
           params: ManagementClient.docRefToParams(docRef),
         })
-        .pipe(catchError(err => {
-          if (err.status === 404) {
-            onFailure(new MissingDocumentError(err.error));
-          } else {
-            onFailure(new UnexpectedServerError(err.error));
-          }
+        .pipe(
+          catchError(err => {
+            if (err.status === 404) {
+              onFailure(new MissingDocumentError(err.error));
+            } else {
+              onFailure(new UnexpectedServerError(err.error));
+            }
 
-          return throwError(() => err);
-        }))
+            return throwError(() => err);
+          }),
+          finalize(() => {
+            this.loaderService.loading = false;
+          }),
+        )
         .subscribe(doc => onSuccess(doc));
     });
   }
 
   public putDocument(docRef: DocumentReference, content: DocumentContent): Outcome<Document, InvalidDocumentError | UnexpectedServerError> {
+    this.loaderService.loading = true;
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
         .put<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, content, {
           params: ManagementClient.docRefToParams(docRef),
         })
-        .pipe(catchError(err => {
-          if (err.status === 400) {
-            onFailure(err.error);
-          } else {
-            onFailure(new UnexpectedServerError(err.error));
-          }
+        .pipe(
+          catchError(err => {
+            if (err.status === 400) {
+              onFailure(err.error);
+            } else {
+              onFailure(new UnexpectedServerError(err.error));
+            }
 
-          return throwError(() => err);
-        }))
+            return throwError(() => err);
+          }),
+          finalize(() => {
+            this.loaderService.loading = false;
+          }),
+        )
         .subscribe(doc => onSuccess(doc));
     });
   }
 
   public deleteDocument(docRef: DocumentReference): Observable<Document> {
-    return this.http.delete<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, {
-      params: ManagementClient.docRefToParams(docRef),
-    });
+    this.loaderService.loading = true;
+    return this.http
+      .delete<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, {
+        params: ManagementClient.docRefToParams(docRef),
+      })
+      .pipe(
+        finalize(() => {
+          this.loaderService.loading = false;
+        })
+      );
   }
 
   public publishDocument(docRef: DocumentReference): Observable<void> {
-    return this.http.post<void>(environment.baseUrl + `/rest/management/stores/${docRef.store}/actions/publish`, null, {
-      params: ManagementClient.docRefToParams(docRef),
-    });
+    this.loaderService.loading = true;
+    return this.http
+      .post<void>(environment.baseUrl + `/rest/management/stores/${docRef.store}/actions/publish`, null, {
+        params: ManagementClient.docRefToParams(docRef),
+      })
+      .pipe(
+        finalize(() => {
+          this.loaderService.loading = false;
+        })
+      );
   }
 
   private static docRefToParams(docRef: DocumentReference): HttpParams {
