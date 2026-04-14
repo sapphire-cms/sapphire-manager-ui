@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ContentSchema,} from '@sapphire-cms/core';
 import {Subject, takeUntil} from 'rxjs';
@@ -16,7 +16,6 @@ import {DOCUMENT_KEY} from '../document.resolver';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocumentEditComponent implements OnDestroy {
-  // protected docRef!: DocumentReference;
   protected contentSchema!: ContentSchema;
   protected originalDocument!: FullDocument;
   protected changedDocument!: FullDocument;
@@ -31,12 +30,27 @@ export class DocumentEditComponent implements OnDestroy {
     this.activatedRoute.data
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
-        // this.docRef = data[DOCUMENT_REFERENCE];
         this.contentSchema = data[CONTENT_SCHEMA_KEY];
         this.originalDocument = (data[DOCUMENT_KEY] as FullDocument).clone();
         this.changedDocument = this.originalDocument.clone();
-        // this.loadDocument();
       });
+  }
+
+  @HostListener('document:keydown', [ '$event' ])
+  public handleKeydown(event: KeyboardEvent) {
+    const isSaveShortcut = (event.ctrlKey || event.metaKey)
+      && event.key.toLowerCase() === 's';
+
+    if (!isSaveShortcut) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (this.documentChanged) {
+      this.saveChanges();
+    }
   }
 
   protected onDocumentChange(updatedDocument: FullDocument) {
