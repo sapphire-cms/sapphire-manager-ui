@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy} from '@angular/core';
 import {ContentSchema, ContentType, DocumentReference,} from '@sapphire-cms/core';
 import {map, Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -39,6 +39,21 @@ export class DocumentCreateComponent implements OnDestroy {
         this.document = FullDocument.createEmpty(contentSchema);
         this.cdr.markForCheck();
       });
+  }
+
+  @HostListener('document:keydown', [ '$event' ])
+  public handleKeydown(event: KeyboardEvent) {
+    const isSaveShortcut = (event.ctrlKey || event.metaKey)
+      && event.key.toLowerCase() === 's';
+
+    if (!isSaveShortcut) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.saveDocument();
   }
 
   protected get readyToSave(): boolean {

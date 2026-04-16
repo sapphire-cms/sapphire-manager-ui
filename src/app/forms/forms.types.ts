@@ -146,21 +146,28 @@ export class FullDocument implements Clonable<FullDocument> {
   }
 }
 
-export interface EditableListItem<T> {
+export type ListItem = PrimitiveValue | FullDocument;
+
+export interface EditableListItem<T extends ListItem | undefined> {
   id: string;
   value: T;
 }
 
-export class EditableList<T> {
+export class EditableList<T extends ListItem | undefined> {
   public readonly items: EditableListItem<T>[];
 
   constructor(sourceList: T[]) {
     this.items = [];
 
     for (let i = 0; i < sourceList.length; i++) {
+      const value = sourceList[i];
+      const id = value instanceof FullDocument
+        ? value.ref.toString()
+        : String(value);
+
       this.items.push({
-        id: String(i),
-        value: sourceList[i],
+        id,
+        value,
       });
     }
   }
@@ -170,9 +177,13 @@ export class EditableList<T> {
   }
 
   public add(value: T) {
+    const id = value instanceof FullDocument
+        ? value.ref.toString()
+        : String(value);
+
     this.items.push({
-      id: String(this.items.length),
-      value: value,
+      id,
+      value,
     });
   }
 
