@@ -64,6 +64,18 @@ export class ManagementService {
   }
 
   public saveDocument(document: FullDocument, contentSchema: ContentSchema): Outcome<FullDocument, UnexpectedServerError> {
+    return program(
+      function* (): Program<FullDocument, UnexpectedServerError> {
+        const transactionId: string = yield this.managementClient.startTransaction();
+        const savedDocument: FullDocument = yield this._saveDocument(document, contentSchema, transactionId);
+        yield this.managementClient.completeTransaction(transactionId);
+        return savedDocument;
+      },
+      this,
+    );
+  }
+
+  private _saveDocument(document: FullDocument, contentSchema: ContentSchema, transactionId: string): Outcome<FullDocument, UnexpectedServerError> {
     const docClone = document.clone();
 
     return program(
@@ -76,11 +88,11 @@ export class ManagementService {
               const groupDocs = docClone.content[fieldSchema.name] as FullDocument[];
 
               for (let i = 0; i < groupDocs.length; i++) {
-                groupDocs[i] = yield this.saveDocument(groupDocs[i], hiddenCollectionSchema);
+                groupDocs[i] = yield this._saveDocument(groupDocs[i], hiddenCollectionSchema, transactionId);
               }
             } else {
               const groupDoc = docClone.content[fieldSchema.name] as FullDocument;
-              docClone.content[fieldSchema.name] = yield this.saveDocument(groupDoc, hiddenCollectionSchema);
+              docClone.content[fieldSchema.name] = yield this._saveDocument(groupDoc, hiddenCollectionSchema, transactionId);
             }
           }
         }
@@ -107,7 +119,7 @@ export class ManagementService {
         }
 
         return this.managementClient
-          .putDocument(docClone.ref, flatContent)
+          .putDocument(docClone.ref, flatContent, transactionId)
           .map((savedDoc) => {
             docClone.ref = new DocumentReference(savedDoc.store, savedDoc.path, savedDoc.id, savedDoc.variant);
             docClone.validation = undefined;
@@ -119,7 +131,7 @@ export class ManagementService {
                 docClone.validation = ManagementService.deserializeContentValidation((validationError as InvalidDocumentError).validationResult);
                 return success(docClone) as Outcome<FullDocument, UnexpectedServerError>;
               },
-              _: (internalError) => {
+              _: () => {
                 return failure(err as UnexpectedServerError) as Outcome<FullDocument, UnexpectedServerError>;
               }
             });

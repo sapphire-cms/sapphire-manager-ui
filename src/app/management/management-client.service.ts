@@ -14,6 +14,10 @@ import {MissingDocumentError, UnexpectedServerError} from '../../utils/errors';
 import {environment} from '../../environments/environment';
 import {LoaderService} from '../layout/loader.service';
 
+type CreateTransactionResponse = {
+  transactionId: string;
+};
+
 @Injectable()
 export class ManagementClient {
   constructor(private readonly http: HttpClient,
@@ -78,12 +82,18 @@ export class ManagementClient {
     });
   }
 
-  public putDocument(docRef: DocumentReference, content: DocumentContent): Outcome<Document, InvalidDocumentError | UnexpectedServerError> {
+  public putDocument(docRef: DocumentReference, content: DocumentContent, transactionId?: string): Outcome<Document, InvalidDocumentError | UnexpectedServerError> {
+    let params = ManagementClient.docRefToParams(docRef);
+    if (transactionId) {
+      params = params.set('t', transactionId);
+    }
+
     this.loaderService.loading = true;
+
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
         .put<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, content, {
-          params: ManagementClient.docRefToParams(docRef),
+          params,
         })
         .pipe(
           catchError(err => {
@@ -103,11 +113,17 @@ export class ManagementClient {
     });
   }
 
-  public deleteDocument(docRef: DocumentReference): Observable<Document> {
+  public deleteDocument(docRef: DocumentReference, transactionId?: string): Observable<Document> {
+    let params = ManagementClient.docRefToParams(docRef);
+    if (transactionId) {
+      params = params.set('t', transactionId);
+    }
+
     this.loaderService.loading = true;
+
     return this.http
       .delete<Document>(environment.baseUrl + `/rest/management/stores/${docRef.store}/docs`, {
-        params: ManagementClient.docRefToParams(docRef),
+        params,
       })
       .pipe(
         finalize(() => {
@@ -127,6 +143,48 @@ export class ManagementClient {
           this.loaderService.loading = false;
         })
       );
+  }
+
+  public startTransaction(): Outcome<string, UnexpectedServerError> {
+    return Outcome.fromCallback((onSuccess, onFailure) => {
+      this.http
+        .post<CreateTransactionResponse>(`${environment.baseUrl}/rest/management/persistence/transaction`, null)
+        .pipe(
+          catchError(err => {
+            onFailure(new UnexpectedServerError(err.error));
+            return throwError(() => err);
+          }),
+        )
+        .subscribe(response => onSuccess(response.transactionId));
+    });
+  }
+
+  public completeTransaction(transactionId: string): Outcome<void, UnexpectedServerError> {
+    return Outcome.fromCallback((onSuccess, onFailure) => {
+      this.http
+        .post<void>(`${environment.baseUrl}/rest/management/persistence/transaction/${transactionId}/complete`, null)
+        .pipe(
+          catchError(err => {
+            onFailure(new UnexpectedServerError(err.error));
+            return throwError(() => err);
+          }),
+        )
+        .subscribe(() => onSuccess());
+    });
+  }
+
+  public abortTransaction(transactionId: string): Outcome<void, UnexpectedServerError> {
+    return Outcome.fromCallback((onSuccess, onFailure) => {
+      this.http
+        .delete<void>(`${environment.baseUrl}/rest/management/persistence/transaction/${transactionId}`)
+        .pipe(
+          catchError(err => {
+            onFailure(new UnexpectedServerError(err.error));
+            return throwError(() => err);
+          }),
+        )
+        .subscribe(() => onSuccess());
+    });
   }
 
   private static docRefToParams(docRef: DocumentReference): HttpParams {
