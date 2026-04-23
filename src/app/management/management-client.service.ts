@@ -146,6 +146,8 @@ export class ManagementClient {
   }
 
   public startTransaction(): Outcome<string, UnexpectedServerError> {
+    this.loaderService.loading = true;
+
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
         .post<CreateTransactionResponse>(`${environment.baseUrl}/rest/management/persistence/transaction`, null)
@@ -154,12 +156,17 @@ export class ManagementClient {
             onFailure(new UnexpectedServerError(err.error));
             return throwError(() => err);
           }),
+          finalize(() => {
+            this.loaderService.loading = false;
+          }),
         )
         .subscribe(response => onSuccess(response.transactionId));
     });
   }
 
   public completeTransaction(transactionId: string): Outcome<void, UnexpectedServerError> {
+    this.loaderService.loading = true;
+
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
         .post<void>(`${environment.baseUrl}/rest/management/persistence/transaction/${transactionId}/complete`, null)
@@ -167,6 +174,9 @@ export class ManagementClient {
           catchError(err => {
             onFailure(new UnexpectedServerError(err.error));
             return throwError(() => err);
+          }),
+          finalize(() => {
+            this.loaderService.loading = false;
           }),
         )
         .subscribe(() => onSuccess());
