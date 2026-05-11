@@ -60,7 +60,8 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "rimraf": "^6.0.1",
     "typescript": "~5.8.2",
-    "typescript-eslint": "8.32.1"
+    "typescript-eslint": "8.32.1",
+    "yalc": "^1.0.0-pre.53"
   },
   "scripts": {
     "ng": "ng",
@@ -69,7 +70,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "link": "npm link && npm link @sapphire-cms/core",
+    "link": "yalc @sapphire-cms/core",
+    "publish:local": "yalc publish",
     "lint": "ng lint"
   }
 }
