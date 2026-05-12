@@ -70,7 +70,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "link": "yalc @sapphire-cms/core",
+    "link": "yalc link @sapphire-cms/core",
     "publish:local": "yalc publish",
     "lint": "ng lint"
   }
