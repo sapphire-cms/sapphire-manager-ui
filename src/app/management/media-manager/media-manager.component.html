@@ -1,0 +1,98 @@
+<h3 class="title is-3">Media Manager</h3>
+
+<nav class="breadcrumb">
+  <ul>
+    <li>
+      <span class="icon ml-0 mr-2">
+        <i class="fa-regular fa-image"></i>
+      </span>
+      <a routerLink="."
+         [relativeTo]="activatedRoute.parent">
+        Media
+      </a>
+    </li>
+
+    @for (link of breadcrumbLinks; track $index) {
+      <li>
+        <a [routerLink]="link.path"
+           [relativeTo]="activatedRoute.parent">
+          {{ link.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
+
+<nav class="navbar">
+  <div class="navbar-menu">
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="field is-grouped">
+          <div class="control">
+            <a class="button is-main"
+               [routerLink]="uploadLink"
+               [relativeTo]="activatedRoute.parent">
+              Add media
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+@if (unexpectedServerError) {
+  <article class="message is-danger">
+    <div class="message-body">
+      {{unexpectedServerError}}
+    </div>
+  </article>
+}
+
+<div class="pt-6">
+  <div class="columns is-multiline">
+    @for (folder of folders; track folder.branchId) {
+      <div class="column column is-4-desktop is-3-widescreen is-half-tablet">
+        <p class="has-text-centered">
+        <span class="icon">
+          <i class="fa-solid fa-3x fa-folder"></i>
+        </span>
+        </p>
+
+        <p class="has-text-centered">
+          <a [routerLink]="[ '.', folder.branchId ]">{{ folder.branchId }}</a>
+        </p>
+      </div>
+    }
+
+    @for (media of mediaDocs; track media.docId) {
+      <div class="column column is-4-desktop is-3-widescreen is-half-tablet">
+        <div class="card">
+          <div class="card-content">
+            <figure class="image">
+              <img [src]="thumbnailSrc(media)" />
+            </figure>
+
+            <p style="overflow-wrap: anywhere;">{{ media.docId }}</p>
+          </div>
+
+          <footer class="card-footer">
+            <a class="card-footer-item">
+              <span class="icon">
+                <i class="fas fa-edit"></i>
+              </span>
+              <span>Edit</span>
+            </a>
+            <a class="card-footer-item"
+               (click)="deleteMedia(media)">
+              <span class="icon">
+                <i class="fas fa-trash"></i>
+              </span>
+              <span>Delete</span>
+            </a>
+          </footer>
+        </div>
+      </div>
+    }
+  </div>
+</div>

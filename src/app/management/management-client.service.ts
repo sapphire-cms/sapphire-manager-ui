@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {catchError, finalize, Observable, throwError} from 'rxjs';
 import {
+  BranchInfo,
   ContentSchema,
   Document,
   DocumentContent,
@@ -13,6 +14,13 @@ import {Outcome} from 'defectless';
 import {MissingDocumentError, UnexpectedServerError} from '../../utils/errors';
 import {environment} from '../../environments/environment';
 import {LoaderService} from '../layout/loader.service';
+
+export type MediaMetadata = {
+  mimeType: string;
+  title?: string;
+  alt?: string;
+  caption?: string;
+};
 
 type CreateTransactionResponse = {
   transactionId: string;
@@ -187,6 +195,86 @@ export class ManagementClient {
     return Outcome.fromCallback((onSuccess, onFailure) => {
       this.http
         .delete<void>(`${environment.baseUrl}/rest/management/persistence/transaction/${transactionId}`)
+        .pipe(
+          catchError(err => {
+            onFailure(new UnexpectedServerError(err.error));
+            return throwError(() => err);
+          }),
+        )
+        .subscribe(() => onSuccess());
+    });
+  }
+
+  public listMedia(path: string[]): Outcome<(DocumentInfo | BranchInfo)[], UnexpectedServerError> {
+    let params = new HttpParams();
+
+    path.forEach(token => {
+      params = params.append('p', token);
+    });
+
+    return Outcome.fromCallback((onSuccess, onFailure) => {
+      this.http
+        .get<(DocumentInfo | BranchInfo)[]>(`${environment.baseUrl}/rest/management/media`, { params })
+        .pipe(
+          catchError(err => {
+            onFailure(new UnexpectedServerError(err.error));
+            return throwError(() => err);
+          }),
+        )
+        .subscribe((response) => onSuccess(response));
+    });
+  }
+
+  public uploadMedia(path: string[], mediaId: string, meta: MediaMetadata, file: File): Outcome<void, UnexpectedServerError> {
+    const formData = new FormData();
+
+    formData.append(
+      'meta',
+      new Blob(
+        [ JSON.stringify(meta) ],
+        { type: 'application/json' },
+      )
+    );
+
+    formData.append(
+      'content',
+      file,
+      file.name,
+    );
+
+    let params = new HttpParams();
+
+    path.forEach(token => {
+      params = params.append('p', token);
+    });
+
+    params = params.append('i', mediaId);
+
+    return Outcome.fromCallback((onSuccess, onFailure) => {
+      this.http
+        .post<void>(`${environment.baseUrl}/rest/management/media`, formData, { params })
+        .pipe(
+          catchError(err => {
+            onFailure(new UnexpectedServerError(err.error));
+            return throwError(() => err);
+          }),
+        )
+        .subscribe(() => onSuccess());
+    });
+  }
+
+  public deleteMedia(path: string[], mediaId: string): Outcome<void, UnexpectedServerError> {
+    let params = new HttpParams();
+
+    path.forEach(token => {
+      params = params.append('p', token);
+    });
+
+    params = params.append('i', mediaId);
+
+    return Outcome.fromCallback((onSuccess, onFailure) => {
+      this.http
+        .delete<void>(`${environment.baseUrl}/rest/management/media`, { params })
         .pipe(
           catchError(err => {
             onFailure(new UnexpectedServerError(err.error));

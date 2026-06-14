@@ -6,6 +6,8 @@ import {CONTENT_SCHEMA_KEY, ContentSchemaResolver} from './content-schema.resolv
 import {DocumentEditComponent} from './document-edit/document-edit.component';
 import {DocumentCreateComponent} from './document-create/document-create.component';
 import {DOCUMENT_KEY, DocumentResolver} from './document.resolver';
+import {MediaManagerComponent} from './media-manager/media-manager.component';
+import {MediaUploadComponent} from './media-upload/media-upload.component';
 
 export const routes: Routes = [
   {
@@ -44,6 +46,42 @@ export const routes: Routes = [
               }
             ],
           }
+        ],
+      },
+      {
+        path: 'media',
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'browse',
+          },
+          {
+            path: 'browse',
+            children: [
+              {
+                path: '',
+                component: MediaManagerComponent,
+              },
+              {
+                path: '**',
+                component: MediaManagerComponent,
+              },
+            ],
+          },
+          {
+            path: 'upload',
+            children: [
+              {
+                path: '',
+                component: MediaUploadComponent,
+              },
+              {
+                path: '**',
+                component: MediaUploadComponent,
+              },
+            ],
+          },
         ],
       },
     ],

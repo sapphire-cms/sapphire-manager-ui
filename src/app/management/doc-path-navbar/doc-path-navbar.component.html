@@ -3,10 +3,8 @@
     <li>
       <scms-content-type-icon [contentType]="contentSchema.type">
       </scms-content-type-icon>
-      <a>
-        <a [routerLink]="[ '/management', 'stores', contentSchema.name ]">
-          {{ contentSchema.label || contentSchema.name }}
-        </a>
+      <a [routerLink]="[ '/management', 'stores', contentSchema.name ]">
+        {{ contentSchema.label || contentSchema.name }}
       </a>
     </li>
 

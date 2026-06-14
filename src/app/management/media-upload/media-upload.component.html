@@ -1,0 +1,109 @@
+<nav class="navbar">
+  <div class="navbar-menu">
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="field is-grouped">
+          <div class="control">
+            <a class="button"
+               [routerLink]="browseLink"
+               [relativeTo]="activatedRoute.parent">
+              <span>Abandon</span>
+            </a>
+          </div>
+
+          <div class="control">
+            <button type="submit"
+                    form="mediaForm"
+                    class="button is-main">
+              <span class="icon">
+                <i class="fa-solid fa-upload"></i>
+              </span>
+              <span>Upload media</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+@if (unexpectedServerError) {
+  <article class="message is-danger">
+    <div class="message-body">
+      {{unexpectedServerError}}
+    </div>
+  </article>
+}
+
+<scms-doc-path-input [(value)]="path">
+</scms-doc-path-input>
+
+<scms-doc-id-input (valueChange)="mediaId = $event">
+</scms-doc-id-input>
+
+<form #mediaForm="ngForm"
+      id="mediaForm"
+      [formGroup]="formControls"
+      (submit)="uploadMedia()">
+  <div class="field">
+    <div class="file has-name">
+      <label class="file-label">
+        <input
+          class="file-input"
+          type="file"
+          name="media"
+          (change)="onFileSelected($event)"
+          [class.is-danger]="media.errors?.['required'] && mediaForm['submitted']" />
+
+        <span class="file-cta">
+          <span class="file-icon">
+            <i class="fas fa-upload"></i>
+          </span>
+          <span class="file-label">Choose a file...</span>
+        </span>
+
+        <span class="file-name">
+          {{ media.value?.name || 'No media selected' }}
+        </span>
+      </label>
+
+      <button class="button is-danger"
+              [disabled]="!media.value"
+              (click)="deleteSelectedFile()">
+        <span class="icon is-small">
+          <i class="fas fa-trash"></i>
+        </span>
+      </button>
+    </div>
+
+    @if (media.errors?.['required'] && mediaForm['submitted']) {
+      <p class="help is-danger">
+        Media file is required!
+      </p>
+    }
+  </div>
+
+  <div class="field">
+    <label class="label">Title</label>
+    <div class="control">
+      <input class="input" type="text" name="title" formControlName="title" />
+    </div>
+    <p class="help">Human-readable name of the media asset</p>
+  </div>
+
+  <div class="field">
+    <label class="label">Alt</label>
+    <div class="control">
+      <input class="input" type="text" name="alt" formControlName="alt" />
+    </div>
+    <p class="help">Accessibility description of the media</p>
+  </div>
+
+  <div class="field">
+    <label class="label">Caption</label>
+    <div class="control">
+      <input class="input" type="text" name="caption" formControlName="caption" />
+    </div>
+    <p class="help">Text displayed alongside the media</p>
+  </div>
+</form>

@@ -4,7 +4,7 @@ import {StoreList} from './store-list/store-list.component';
 import {ManagementClient} from './management-client.service';
 import {provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
 import {ManagementComponent} from './management/management.component';
-import {RouterModule} from '@angular/router';
+import {RouterLink, RouterModule} from '@angular/router';
 import {StoreDetailsComponent} from './store-details/store-details.component';
 import {ContentSchemaResolver} from './content-schema.resolver';
 import {DocumentEditComponent} from './document-edit/document-edit.component';
@@ -21,6 +21,9 @@ import {ManagementService} from './management.service';
 import {DocumentStatusBarComponent} from './document-status-bar/document-status-bar.component';
 import {AuthenticationModule} from '../authentication/authentication.module';
 import {DocumentResolver} from './document.resolver';
+import {MediaManagerComponent} from './media-manager/media-manager.component';
+import {MediaUploadComponent} from './media-upload/media-upload.component';
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   imports: [
@@ -29,6 +32,8 @@ import {DocumentResolver} from './document.resolver';
     FormsModule,
     AuthenticationModule,
     DefaultInputsModule,  // TODO: think where to place it
+    RouterLink,
+    ReactiveFormsModule,
   ],
   declarations: [
     ContentTypeIconComponent,
@@ -41,6 +46,8 @@ import {DocumentResolver} from './document.resolver';
     DocumentEditComponent,
     DocumentPickerComponent,
     ReferenceInputComponent,
+    MediaManagerComponent,
+    MediaUploadComponent,
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),

@@ -1,10 +1,4 @@
-export abstract class Throwable extends Error {
-  public abstract _tag: string;
-
-  protected constructor(message: string, cause?: unknown) {
-    super(message, { cause });
-  }
-}
+import {Throwable} from '@sapphire-cms/core';
 
 export class UnexpectedServerError extends Throwable {
   public readonly _tag = 'UnexpectedServerError';
