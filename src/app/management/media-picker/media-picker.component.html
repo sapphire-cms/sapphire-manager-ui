@@ -1,0 +1,69 @@
+<div class="modal"
+     [class.is-active]="shown">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <scms-media-path-navbar [path]="path"
+                              (linkClick)="navigate($event)">
+      </scms-media-path-navbar>
+    </header>
+
+    <section class="modal-card-body">
+      @if (unexpectedServerError) {
+        <article class="message is-small is-danger">
+          <div class="message-body">
+            {{unexpectedServerError}}
+          </div>
+        </article>
+      }
+
+      <table class="table is-fullwidth mt-3">
+        <tbody>
+          @for (folder of folders; track folder.branchId) {
+            <tr>
+              <td>
+                <span class="icon">
+                  <i class="fa-solid fa-folder"></i>
+                </span>
+
+                <a (click)="selectFolder(folder)">{{ folder.branchId }}</a>
+              </td>
+              <td></td>
+            </tr>
+          }
+
+          @for (media of mediaDocs; track media.docId) {
+            <tr>
+              <td>
+                <span class="icon">
+                  <i class="fa-solid fa-image"></i>
+                </span>
+
+                <a (click)="selectedMedia.emit(media)">{{ media.docId }}</a>
+              </td>
+
+              <td>
+                <figure class="image is-32x32">
+                  <scms-media-thumbnail [mediaDoc]="media"></scms-media-thumbnail>
+                </figure>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="modal-card-foot">
+      <button type="button"
+              class="button"
+              (click)="close.emit()">
+        <span>Cancel</span>
+      </button>
+    </footer>
+  </div>
+
+  <button type="button"
+          class="modal-close is-large"
+          (click)="close.emit()">
+  </button>
+</div>

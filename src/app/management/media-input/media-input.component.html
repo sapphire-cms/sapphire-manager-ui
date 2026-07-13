@@ -1,0 +1,44 @@
+<div class="field has-addons">
+  <p class="control">
+    <a class="button is-static">
+      <span class="icon">
+        <i class="fa-solid fa-image"></i>
+      </span>
+    </a>
+  </p>
+
+  <p class="control is-expanded">
+    <input class="input"
+           type="text"
+           placeholder="Select or upload a new media"
+           readonly
+           [value]="value || ''">
+  </p>
+
+  <p class="control">
+    <button type="button"
+            class="button is-link"
+            (click)="pickedShown = true">
+      <span>Select</span>
+    </button>
+  </p>
+
+  <p class="control">
+    <button type="button"
+            class="button is-danger"
+            (click)="clear()">
+      <span>Clear</span>
+    </button>
+  </p>
+</div>
+
+@if (selectedMedia) {
+  <figure class="image is-128x128 has-image-centered">
+    <scms-media-thumbnail [mediaDoc]="selectedMedia"></scms-media-thumbnail>
+  </figure>
+}
+
+<scms-media-picker [shown]="pickedShown"
+                   (selectedMedia)="onSelect($event)"
+                   (close)="pickedShown = false">
+</scms-media-picker>

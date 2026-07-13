@@ -1,14 +1,8 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Subject, takeUntil} from 'rxjs';
 import {ManagementClient} from '../management-client.service';
 import {BranchInfo, DocumentInfo, isBranchInfo} from '@sapphire-cms/core';
-import {environment} from '../../../environments/environment';
-
-type BreadcrumbLink = {
-  label: string;
-  path: string[];
-};
 
 @Component({
   selector: 'scms-media-manager',
@@ -26,6 +20,7 @@ export class MediaManagerComponent implements OnDestroy {
 
   constructor(protected readonly activatedRoute: ActivatedRoute,
               private readonly managementClient: ManagementClient,
+              private readonly router: Router,
               private readonly cdr: ChangeDetectorRef) {
     this.activatedRoute.url
       .pipe(
@@ -59,31 +54,16 @@ export class MediaManagerComponent implements OnDestroy {
     return [ '..', 'upload', ...this.path ];
   }
 
-  protected get breadcrumbLinks(): BreadcrumbLink[] {
-    const links: BreadcrumbLink[] = [];
-    const tokens: string[] = []
-
-    for (const token of this.path) {
-      tokens.push(token);
-      links.push({
-        label: token,
-        path: [...tokens],
+  protected navigateInManager(path: string[]) {
+    if (path.length) {
+      this.router.navigate(path, {
+        relativeTo: this.activatedRoute.parent,
+      });
+    } else {
+      this.router.navigate(['.'], {
+        relativeTo: this.activatedRoute.parent,
       });
     }
-
-    return links;
-  }
-
-  protected thumbnailSrc(mediaDoc: DocumentInfo): string {
-    const params: string[] = [];
-
-    for (const token of mediaDoc.path) {
-      params.push(`p=${token}`);
-    }
-
-    params.push(`i=${mediaDoc.docId}`);
-
-    return environment.baseUrl + '/rest/management/media/thumbnail?' + params.join('&');
   }
 
   private loadMedia(path: string[]): Promise<void> {

@@ -24,6 +24,10 @@ import {DocumentResolver} from './document.resolver';
 import {MediaManagerComponent} from './media-manager/media-manager.component';
 import {MediaUploadComponent} from './media-upload/media-upload.component';
 import {ReactiveFormsModule} from "@angular/forms";
+import {MediaInputComponent} from './media-input/media-input.component';
+import {MediaPathNavbarComponent} from './media-path-navbar/media-path-navbar.component';
+import {MediaPickerComponent} from './media-picker/media-picker.component';
+import {MediaThumbnailComponent} from './media-thumbnail/media-thumbnail.component';
 
 @NgModule({
   imports: [
@@ -46,8 +50,12 @@ import {ReactiveFormsModule} from "@angular/forms";
     DocumentEditComponent,
     DocumentPickerComponent,
     ReferenceInputComponent,
+    MediaInputComponent,
     MediaManagerComponent,
     MediaUploadComponent,
+    MediaPathNavbarComponent,
+    MediaPickerComponent,
+    MediaThumbnailComponent,
   ],
   providers: [
     provideHttpClient(withInterceptorsFromDi()),
@@ -60,5 +68,6 @@ import {ReactiveFormsModule} from "@angular/forms";
 export class ManagementModule {
   constructor(inputsRegistry: InputsRegistryService) {
     inputsRegistry.register('reference', ReferenceInputComponent);
+    inputsRegistry.register('media', MediaInputComponent);
   }
 }
